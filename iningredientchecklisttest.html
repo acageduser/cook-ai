@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Food Ingredients</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+</style>
+</head>
+<body>
+    <h2>Select Food Ingredients</h2>
+    <form id="ingredientForm">
+        <label><input type="checkbox" value="Salt">Salt</label>
+        <label><input type="checkbox" value="Sugar">Sugar</label>
+        <label><input type="checkbox" value="Flour">Flour</label>
+        <label><input type="checkbox" value="Eggs">Eggs</label>
+        <label><input type="checkbox" value="Milk">Milk</label>
+        <label><input type="checkbox" value="Butter">Butter</label>
+        <label><input type="checkbox" value="Tomato">Tomato</label>
+        <label><input type="checkbox" value="Onion">Onion</label>
+        <label><input type="checkbox" value="Garlic">Garlic</label>
+        <label><input type="checkbox" value="Olive Oil">Olive Oil</label>
+    </form>
+
+    <h3>Selected Ingredients:</h3>
+    <ul id="selectedIngredients"></ul>
+
+    <script>
+        const form = document.getElementById("ingredientForm");
+        const selectedIngredientsList = document.getElementById("selectedIngredients");
+        const ingredients = [];
+
+        form.addEventListener("change", function(event) {
+            const checkbox = event.target;
+            const ingredient = checkbox.value;
+
+            if (checkbox.checked) {
+                ingredients.push(ingredient);
+            } else {
+                const index = ingredients.indexOf(ingredient);
+                if (index !== -1) {
+                    ingredients.splice(index, 1);
+                }
+            }
+
+            displaySelectedIngredients();
+        });
+
+        function displaySelectedIngredients() {
+            selectedIngredientsList.innerHTML = "";
+            ingredients.forEach(function(ingredient) {
+                const listItem = document.createElement("li");
+                listItem.textContent = ingredient;
+                selectedIngredientsList.appendChild(listItem);
+            });
+        }
+    </script>
+</body>
+</html>
