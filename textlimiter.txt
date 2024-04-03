@@ -1,0 +1,27 @@
+\\So apperantly we can limit the number of tokens OAI API will generate to ensure that it drops the explaination stuff. Here is an example
+
+import openai
+
+# Your API key
+api_key = 'your_api_key'
+
+# Prompt for generating recipe
+prompt = 'Generate a recipe for a delicious chocolate cake.'
+
+# Parameters for the request
+params = {
+    'prompt': prompt,
+    'max_tokens': 500  # Adjust this value as needed
+}
+
+# Initialize the OpenAI API client
+openai.api_key = api_key
+
+# Generate the recipe
+response = openai.Completion.create(**params)
+
+# Extract the generated recipe
+generated_recipe = response['choices'][0]['text']
+
+# Display or process the generated recipe as needed
+print(generated_recipe)
