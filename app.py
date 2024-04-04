@@ -18,18 +18,24 @@ def generate():
     if not user_input:
         return "User input is required", 400
 
-    # Part 1 of the prompt
-    prompt_part1 = ("Generate a recipe with an 'ingredients', 'prepare' and 'cook' section. "
-                    "Include how much of each ingredient you need. "
+    # Part 1 of the prompt (setup)
+    prompt_part1 = ("Generate a recipe with an 'ingredients', 'prepare' and 'cook' section. ")
+
+    # Part 2 of the prompt (serving size)
+    prompt_part2 = ("The serving size is 4. ")
+
+    # Part 3 of the prompt (Ingredients list)
+    prompt_part3 = ("Include how much of each ingredient you need. "
                     "Use only this list of ingredients to create a step "
-                    "by step recipe to feed 4 people: "
+                    "by step recipe: "
                     "Milk, Peanuts, Table, Pepper/Salt, Shredded Beef, "
                     "Angel Hair Pasta, Brown Sugar, Shredded Cheese, Tomato, "
                     "Ketchup, Lettuce, Salmon, Onion, Black Beans. "
                     "The food I want to make is: ")
 
+
     # Combine part 1 and user input to create the final prompt
-    final_prompt = prompt_part1 + user_input
+    final_prompt = prompt_part1 + prompt_part2 + user_input
 
     try:
         # Create an OpenAI client instance
