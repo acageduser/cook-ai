@@ -34,7 +34,7 @@ def generate():
                     "The food I want to make is: ")
 
 
-    # Combine part 1 and user input to create the final prompt
+    # Combine all the prompt_partX together with user input to create the final_prompt
     final_prompt = prompt_part1 + prompt_part2 + user_input
 
     try:
