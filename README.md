@@ -1,3 +1,3 @@
 # cook-ai
 
-HTML Website + Localhost + OpenAI API Integration
+HTML Website + Flask Server Host + OpenAI API Integration
