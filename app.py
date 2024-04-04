@@ -29,8 +29,9 @@ def generate():
                    "sesame seeds, peanuts"
                    ". Do not include the allergens in the recipe!")
 
-    # Part 3 of the prompt (Ingredients list)
-    prompt_part3 = ("Include how much of each ingredient you need. "
+    # Part 4 of the prompt (Ingredients list)
+    # NOTE: This part MUST be the final part of the prompt.
+    prompt_part4 = ("Include how much of each ingredient you need. "
                     "Use only this list of ingredients to create a step "
                     "by step recipe: "
                     "Milk, Peanuts, Table, Pepper, Salt, Shredded Beef, "
@@ -40,7 +41,7 @@ def generate():
 
 
     # Combine all the prompt_partX together with user input to create the final_prompt
-    final_prompt = prompt_part1 + prompt_part2 + user_input
+    final_prompt = prompt_part1 + prompt_part2 + prompt_part3 + prompt_part4 + user_input
 
     try:
         # Create an OpenAI client instance
