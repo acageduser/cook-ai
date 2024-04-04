@@ -38,9 +38,9 @@ def generate():
                     "Potatoes, Bell Pepper, Spinach, Lemon, Lime, Vinegar, Chicken Wings, "
                     "Eggs, Butter, Yogurt, Parmesan, Garbanzo Beans, White Rice, Tomato Paste, "
                     "Olive Oil, Canola Oil, Cumin, Smoked Paprika, Cayenne, Oregano, "      
-                    "Milk, Peanuts, Table, Pepper, Salt, Shredded Beef, "
+                    "Milk, Peanuts, Table Salt, Pepper Shredded Beef, "
                     "Angel Hair Pasta, Brown Sugar, Shredded Cheese, Tomato, "
-                    "Ketchup, Lettuce, Salmon, Onion, Black Beans, sesame seeds. "
+                    "Ketchup, Lettuce, Salmon, Onion, Black Beans, Sesame Seeds. "
                     "The food I want to make is: ")
 
 
