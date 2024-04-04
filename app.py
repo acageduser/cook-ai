@@ -19,7 +19,10 @@ def generate():
         return "User input is required", 400
 
     # Part 1 of the prompt
-    prompt_part1 = ("Use only this list of ingredients to create a recipe: "
+    prompt_part1 = ("Generate a recipe with an 'ingredients', 'prepare' and 'cook' section. "
+                    "Include how much of each ingredient you need. "
+                    "Use only this list of ingredients to create a step "
+                    "by step recipe to feed 4 people: "
                     "Milk, Peanuts, Table, Pepper/Salt, Shredded Beef, "
                     "Angel Hair Pasta, Brown Sugar, Shredded Cheese, Tomato, "
                     "Ketchup, Lettuce, Salmon, Onion, Black Beans. "
