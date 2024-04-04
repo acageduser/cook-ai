@@ -34,7 +34,7 @@ def generate():
     prompt_part4 = ("Include how much of each ingredient you need. "
                     "Use only this list of ingredients to create a step "
                     "by step recipe: "
-                    "Onions, Garlic, Carrots, Celery, Jalapenos, Cilantro, Parsley, Dill, "
+                    "Garlic, Carrots, Celery, Jalapenos, Cilantro, Parsley, Dill, "
                     "Potatoes, Bell Pepper, Spinach, Lemon, Lime, Vinegar, Chicken Wings, "
                     "Eggs, Butter, Yogurt, Parmesan, Garbanzo Beans, White Rice, Tomato Paste, "
                     "Olive Oil, Canola Oil, Cumin, Smoked Paprika, Cayenne, Oregano, "      
