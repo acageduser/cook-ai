@@ -24,13 +24,18 @@ def generate():
     # Part 2 of the prompt (serving size)
     prompt_part2 = ("The serving size is 4. ")
 
+    # Part 3 of the prompt (allergens)
+    prompt_part3 = ("I'm allergic to "
+                   "sesame seeds, peanuts"
+                   ". Do not include the allergens in the recipe!")
+
     # Part 3 of the prompt (Ingredients list)
     prompt_part3 = ("Include how much of each ingredient you need. "
                     "Use only this list of ingredients to create a step "
                     "by step recipe: "
-                    "Milk, Peanuts, Table, Pepper/Salt, Shredded Beef, "
+                    "Milk, Peanuts, Table, Pepper, Salt, Shredded Beef, "
                     "Angel Hair Pasta, Brown Sugar, Shredded Cheese, Tomato, "
-                    "Ketchup, Lettuce, Salmon, Onion, Black Beans. "
+                    "Ketchup, Lettuce, Salmon, Onion, Black Beans, sesame seeds. "
                     "The food I want to make is: ")
 
 
