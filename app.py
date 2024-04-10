@@ -8,7 +8,7 @@ def home():
     # Render the HTML page for user interaction
     return render_template('Kitchen — CookAI.html')
 
-@app.route('/sites/generate — CookAI.html', methods=['POST'])
+@app.route('/generate', methods=['POST'])
 def generate():
     api_key = request.form['api_key']
     user_input = request.form['user_input']
