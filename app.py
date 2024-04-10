@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, send_from_directory
 import openai
 import json
 
@@ -79,7 +79,7 @@ def generate():
         json.dump(output_data, outfile)
 
     # Send the generated text back to the client
-    return generated_text
+    return render_template('generate — CookAI.html', generated_text=generated_text)
 
 if __name__ == '__main__':
     app.run(debug=True)
