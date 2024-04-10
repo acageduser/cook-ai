@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request
 import openai
+import json
 
 app = Flask(__name__)
 
@@ -10,6 +11,7 @@ def home():
 
 @app.route('/generate', methods=['POST'])
 def generate():
+
     api_key = request.form['api_key']
     user_input = request.form['user_input']
 
@@ -70,6 +72,11 @@ def generate():
         generated_text = response.choices[0].message.content
     except Exception as e:
         return f"An error occurred: {str(e)}", 500
+
+    # Save the generated text to a JSON file in the 'response' folder
+    output_data = {'generated_text': generated_text}
+    with open('response/out.json', 'w') as outfile:
+        json.dump(output_data, outfile)
 
     # Send the generated text back to the client
     return generated_text
