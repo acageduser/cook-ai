@@ -1236,15 +1236,31 @@
   
 
 <script>
-  fetch('./response/out.json')
-    .then(response => response.json())
-    .then(data => {
-      const textElement = document.querySelector('.sqs-html-content p');
-      if (textElement) {
-        textElement.textContent = data.generated_text;
-      }
-    })
-    .catch(error => console.error('Error loading the generated text:', error));
+fetch('./response/out.json')
+  .then(response => response.json())
+  .then(data => {
+    const recipe = data.generated_text; // Assuming generated_text contains the JSON recipe string
+    const recipeObj = JSON.parse(recipe); // Convert the recipe string to a JavaScript object
+    const textElement = document.querySelector('.sqs-html-content p');
+    if (textElement) {
+      let content = `Your Recipe: <strong>${recipeObj.name}</strong><br>`;
+      content += `<strong>Title:</strong> ${recipeObj.recipe.title}<br>`;
+      content += `<strong>Serving Size:</strong> ${recipeObj.recipe.serving_size}<br>`;
+      content += '<strong>Ingredients:</strong><ul>';
+      Object.entries(recipeObj.recipe.ingredients).forEach(([ingredient, quantity]) => {
+        content += `<li>${ingredient}: ${quantity}</li>`;
+      });
+      content += '</ul>';
+      content += '<strong>Cooking Steps:</strong><ol>';
+      recipeObj.recipe.cook.forEach(step => {
+        content += `<li>${step}</li>`;
+      });
+      content += '</ol>';
+
+      textElement.innerHTML = content; // Use innerHTML since we're including HTML tags
+    }
+  })
+  .catch(error => console.error('Error loading the generated text:', error));
 </script>
 
 
