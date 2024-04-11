@@ -33,7 +33,7 @@ def generate():
                     "Only use what you need for the recipe. If the following list does not include an ingredient, do NOT include it. Here is the list of ingredients to choose from: "
                     "Garlic, Carrots, Celery, Jalapenos, Cilantro, Pierogies, Chicken Wings, Parsley, Dill, Potatoes, Bell Pepper, "
                     "Spinach, Lemon, Lime, Vinegar, Chicken, Eggs, Butter, Yogurt, Parmesan, Garbanzo Beans, White Rice, Tomato Paste, Olive Oil, "
-                    "Canola Oil, Cumin, Smoked Paprika, Cayenne, Oregano, Milk, Table Salt, Pepper, Shredded Beef, Angel Hair Pasta, Brown Sugar, "
+                    "Canola Oil, Cumin, Smoked Paprika, Cayenne, Oregano, Ramen Noodles, Milk, Table Salt, Pepper, Shredded Beef, Angel Hair Pasta, Brown Sugar, "
                     "Shredded Cheese, Tomato, Ketchup, Lettuce, Salmon, Onion, Black Beans. "
                     "Please format the ingredients as a JSON object. ")
     prompt_part5 = "The food I want to make is: "
