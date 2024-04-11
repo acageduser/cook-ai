@@ -6,18 +6,15 @@ app = Flask(__name__)
 
 @app.route('/response/<filename>')
 def response(filename):
-    """Serve a file from the 'response' directory."""
     return send_from_directory('response', filename)
 
 @app.route('/', methods=['GET'])
 def home():
-    """Render the home page."""
     # Render the HTML page for user interaction
     return render_template('Kitchen — CookAI.html')
 
 @app.route('/generate', methods=['POST'])
 def generate():
-    """Handle the generation of the recipe."""
     api_key = request.form['api_key']
     user_input = request.form['user_input']
 
@@ -28,23 +25,18 @@ def generate():
         return "User input is required", 400
     
     # Construct the prompt for the OpenAI API
-    prompt_part0 = "Decide on a name for the recipe and output the name section first."
-    prompt_part1 = "Generate a recipe in this order with a 'title', 'serving size', 'ingredients', and 'cook' sections. "
-    prompt_part2 = "The serving size is 4. "
-    prompt_part3 = "I'm allergic to sesame seeds, peanuts. Do not include the allergens in the recipe!"
-    prompt_part4 = ("List out the ingredients using only JSON formatting and cooking steps "
-                    "and format it in a step by step list using new lines, headings, and bulleted lists"
-                    "Provide your answer in JSON form. Reply with only the answer in JSON form and "
-                    "include no other commentary: ")
-    prompt_part5 = ("Include how much of each ingredient you need. "
-                    "Use only this list of ingredients to create a step by step recipe: "
-                    "Garlic, Carrots, Celery, Jalapenos, Cilantro, Parsley, Dill, Potatoes, Bell Pepper, "
-                    "Spinach, Lemon, Lime, Vinegar, Chicken Wings, Eggs, Butter, Yogurt, Parmesan, "
-                    "Garbanzo Beans, White Rice, Tomato Paste, Olive Oil, Canola Oil, Cumin, "
-                    "Smoked Paprika, Cayenne, Oregano, Milk, Peanuts, Table Salt, Pepper, "
-                    "Shredded Beef, Angel Hair Pasta, Brown Sugar, Shredded Cheese, Tomato, "
-                    "Ketchup, Lettuce, Salmon, Onion, Black Beans, Sesame Seeds. "
-                    "The food I want to make is: ")
+    prompt_part0 = "We are creating a recipe. The output should be in JSON format with specific sections with no additonal comments. "
+    prompt_part1 = "The JSON structure should include 'title', 'serving_size', 'ingredients', and 'instructions' in that order. "
+    prompt_part2 = "Start with a 'title' section, followed by 'serving_size'. Then, 'serving_size' should be 4. "
+    prompt_part3 = "Next, list 'ingredients' without sesame seeds and peanuts due to allergies. "
+    prompt_part4 = ("Finally, provide 'instructions' as an ordered list of steps. You do not have to use all the ingredients in the following list. "
+                    "Only use what you need for the recipe. If the following list does not include an ingredient, do NOT include it. Here is the list of ingredients to choose from: "
+                    "Garlic, Carrots, Celery, Jalapenos, Cilantro, Pierogies, Chicken Wings, Parsley, Dill, Potatoes, Bell Pepper, "
+                    "Spinach, Lemon, Lime, Vinegar, Chicken, Eggs, Butter, Yogurt, Parmesan, Garbanzo Beans, White Rice, Tomato Paste, Olive Oil, "
+                    "Canola Oil, Cumin, Smoked Paprika, Cayenne, Oregano, Milk, Table Salt, Pepper, Shredded Beef, Angel Hair Pasta, Brown Sugar, "
+                    "Shredded Cheese, Tomato, Ketchup, Lettuce, Salmon, Onion, Black Beans. "
+                    "Please format the ingredients as a JSON object. ")
+    prompt_part5 = "The food I want to make is: "
 
     # Combine all the parts to create the final prompt
     final_prompt = prompt_part0 + prompt_part1 + prompt_part2 + prompt_part3 + prompt_part4 + prompt_part5 + user_input
