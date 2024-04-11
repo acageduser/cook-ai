@@ -2,7 +2,7 @@
 
 Create a recipe based on ONLY the ingredients inside your fridge! Skip the store and simply cook with this HTML Website + Flask Server Host + OpenAI API Integration.
 
-## Recipe Generator Flask Application
+## CookAI Flask Application
 
 This Flask application generates recipes in JSON format using OpenAI's GPT-3.5.
 
