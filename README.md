@@ -19,7 +19,7 @@ First, clone the repository to your local machine:
 
 ```bash
 git clone https://github.com/acageduser/cook-ai.git
-cd yourrepositoryname
+cd cook-ai```
 
 ## Windows
 
