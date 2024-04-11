@@ -22,21 +22,28 @@ cd cook-ai
 
 ## Windows
 
+```bash
 python -m venv venv
 venv\Scripts\activate
+```
 
 ## macOS and Linux
 
+```bash
 python3 -m venv venv
 source venv/bin/activate
+```
 
 ## Install the required dependencies
-
+```bash
 pip install -r requirements.txt
+```
 
 ## Running the Application
 
+```bash
 flask run
+```
 
 This will start the Flask server on http://127.0.0.1:5000. Navigate to this address in your web browser to interact with the application.
 
