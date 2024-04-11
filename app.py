@@ -19,9 +19,13 @@ def generate():
         return "API key is required", 400
     if not user_input:
         return "User input is required", 400
+    
+    # Part 0 of the prompt (name)
+    prompt_part0 = ("Decide on a name for the recipe and output the name section first.")
 
     # Part 1 of the prompt (setup)
-    prompt_part1 = ("Generate a recipe with an 'ingredients', 'prepare' and 'cook' section. ")
+    prompt_part1 = ("Generate a recipe in this order with a 'title', 'serving size', "
+                    "'ingredients', and 'cook' sections. ")
 
     # Part 2 of the prompt (serving size)
     prompt_part2 = ("The serving size is 4. ")
@@ -32,8 +36,8 @@ def generate():
                    ". Do not include the allergens in the recipe!")
     
     # Part 4 of the prompt (formatting)
-    prompt_part4 = ("List out the ingredients using only JSON formatting, preperation steps, and "
-                    " how to cook the food and format it in a step by step list"
+    prompt_part4 = ("List out the ingredients using only JSON formatting and cooking steps "
+                    "and format it in a step by step list"
                     " using new lines, headings, and bulleted lists"
                     "Provide your answer in JSON form. Reply with only the answer in JSON form and "
                     "include no other commentary: ")
@@ -55,7 +59,7 @@ def generate():
 
 
     # Combine all the prompt_partX together with user input to create the final_prompt
-    final_prompt = prompt_part1 + prompt_part2 + prompt_part3 + prompt_part4 + prompt_part5 + user_input
+    final_prompt = prompt_part0 + prompt_part1 + prompt_part2 + prompt_part3 + prompt_part4 + prompt_part5 + user_input
 
     try:
         # Create an OpenAI client instance
