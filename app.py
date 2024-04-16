@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, send_from_directory
 import openai
 import json
+import os
+
 
 app = Flask(__name__)
 
@@ -8,10 +10,17 @@ app = Flask(__name__)
 def response(filename):
     return send_from_directory('response', filename)
 
-@app.route('/', methods=['GET'])
+@app.route('/')
 def home():
-    # Render the HTML page for user interaction
+    return render_template('CookAI.html')
+
+@app.route('/kitchen')
+def kitchen():
     return render_template('Kitchen — CookAI.html')
+
+@app.route('/fridge')
+def fridge():
+    return render_template('Fridge — CookAI.html')
 
 @app.route('/generate', methods=['POST'])
 def generate():
@@ -58,10 +67,15 @@ def generate():
         # Return an error if something goes wrong
         return f"An error occurred: {str(e)}", 500
 
+    # Check and create the 'response' directory if it does not exist
+    directory = os.path.join(app.root_path, 'response')
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
     # Save the generated text to a JSON file in the 'response' folder
-    output_data = {'generated_text': generated_text}
-    with open('response/out.json', 'w') as outfile:
-        json.dump(output_data, outfile)
+    file_path = os.path.join(directory, 'out.json')
+    with open(file_path, 'w') as outfile:
+        json.dump({'generated_text': generated_text}, outfile)
 
     # Return the generated text to the client by rendering a template
     return render_template('generate — CookAI.html', generated_text=generated_text)
