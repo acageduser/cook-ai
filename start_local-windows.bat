@@ -1,18 +1,50 @@
 @echo off
-REM Change to the directory where the script is located
+
+:: Starting Local Server
+echo.
+echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+echo +                               Starting Local Server                        +
+echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+echo.
+
+:: Change to the directory where the script is located
+echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+echo +                        Changing to the Script Directory                    +
+echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+echo.
 cd /d "%~dp0"
 
-REM Create a virtual environment
+:: Create a virtual environment
+echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+echo +                          Creating Virtual Environment                      +
+echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+echo.
 python -m venv venv
 
-REM Activate the virtual environment
+:: Activate the virtual environment
+echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+echo +                         Activating Virtual Environment                     +
+echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+echo.
 call venv\Scripts\activate
 
-REM Install the required dependencies
+:: Install the required dependencies
+echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+echo +                       Installing Required Dependencies                     +
+echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+echo.
 pip install -r requirements.txt
 
-REM Upgrade to a specific version of the OpenAI API
+:: Upgrade to a specific version of the OpenAI API
+echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+echo +                  Upgrading to a Specific Version of OpenAI API              +
+echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+echo.
 pip install openai==1.35.15
 
-REM Run the Flask application
+:: Run the Flask application
+echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+echo +                          Running the Flask Application                     +
+echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+echo.
 flask run

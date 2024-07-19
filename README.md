@@ -6,44 +6,40 @@ Create a recipe based on ONLY the ingredients inside your fridge! Skip the store
 
 This Flask application generates recipes in JSON format using OpenAI's GPT-3.5.
 
-### Prerequisites
+#### Prerequisites
 
-- Python 3.6 or higher
-- pip
+- Python 3.7 or higher (Make sure Python is [added to your system's PATH](https://www.youtube.com/watch?v=iNoQeRj52zo&ab_channel=ChartExplorers))
 
-### Installation
+- [pip](https://www.youtube.com/watch?v=fJKdIf11GcI&ab_channel=TheCodeCity)
+
+## Installation
 
 First, clone the repository to your local machine:
 
-```bash
+```
 git clone https://github.com/acageduser/cook-ai.git
 cd cook-ai
 ```
 
-## Windows
-
-```bash
-python -m venv venv
-venv\Scripts\activate
-```
-
-## macOS and Linux
-
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-
-## Install the required dependencies
-```bash
-pip install -r requirements.txt
-```
-
 ## Running the Application
 
-```bash
-flask run
+#### Windows
+To start the application on Windows, run the provided batch file:
+
+```
+start_local-windows.bat
 ```
 
-This will start the Flask server on http://127.0.0.1:5000. Navigate to this address in your web browser to interact with the application.
+#### macOS and Linux
+To start the application on macOS or Linux, run the provided shell script:
+
+```
+./start_local-macos-linux.sh
+```
+
+## Accessing the Application
+Open ```start_local-windows.bat``` (Windows) or ```start_local-mac.sh``` (mac/Linux). This is the local server. Once the local server is running, open your web browser and navigate to:
+
+[```http://127.0.0.1:5000```](http://127.0.0.1:5000)
+This will bring up the CookAI interface where you can generate recipes based on the ingredients you have.
 
