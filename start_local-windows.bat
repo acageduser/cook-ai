@@ -11,5 +11,8 @@ call venv\Scripts\activate
 REM Install the required dependencies
 pip install -r requirements.txt
 
+REM Upgrade to a specific version of the OpenAI API
+pip install openai==1.35.15
+
 REM Run the Flask application
 flask run

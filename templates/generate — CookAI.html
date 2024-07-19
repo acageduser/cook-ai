@@ -1308,45 +1308,53 @@
   
   
 
-<script>
-fetch('./response/out.json')
-  .then(response => {
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return response.json();
-  })
-  .then(data => {
-    const recipeObj = data.generated_text; // Assuming generated_text is already a JSON string.
-    try {
-      // Parsing directly if generated_text is a string. If it's already an object, this step isn't necessary.
-      const parsedRecipeObj = JSON.parse(recipeObj); 
-      const textElement = document.querySelector('.sqs-html-content p');
-      if (textElement) {
-        // Constructing content from the recipe object
-        let content = `<strong>Title:</strong> ${parsedRecipeObj.title}<br>`;
-        content += `<strong>Serving Size:</strong> ${parsedRecipeObj.serving_size}<br>`;
-        content += '<strong>Ingredients:</strong><ul>';
-        Object.entries(parsedRecipeObj.ingredients).forEach(([ingredient, quantity]) => {
-          content += `<li>${ingredient}: ${quantity}</li>`;
-        });
-        content += '</ul>';
-        content += '<strong>Cooking Steps:</strong><ol>';
-        parsedRecipeObj.instructions.forEach(step => {
-          content += `<li>${step}</li>`;
-        });
-        content += '</ol>';
+    <script>
+		fetch('./response/out.json')
+		  .then(response => {
+			if (!response.ok) {
+			  throw new Error(`HTTP error! status: ${response.status}`);
+			}
+			return response.json();
+		  })
+		  .then(data => {
+			const recipeObj = data.generated_text;
+			try {
+			  // Parsing directly if generated_text is a string. If it's already an object, this step isn't necessary.
+			  const parsedRecipeObj = JSON.parse(recipeObj);
 
-        textElement.innerHTML = content;
-      }
-    } catch (e) {
-      console.error("Error parsing the recipe:", e);
-    }
-  })
-  .catch(error => {
-    console.error('Error loading the generated text:', error);
-  });
-</script>
+			  // Check if all required fields are present
+			  if (!parsedRecipeObj || !parsedRecipeObj.title || !parsedRecipeObj.serving_size || !parsedRecipeObj.ingredients || !parsedRecipeObj.instructions) {
+				throw new Error('Missing required recipe fields');
+			  }
+
+			  const textElement = document.querySelector('.sqs-html-content p');
+			  if (textElement) {
+				// Constructing content from the recipe object
+				let content = `<strong>Title:</strong> ${parsedRecipeObj.title}<br>`;
+				content += `<strong>Serving Size:</strong> ${parsedRecipeObj.serving_size}<br>`;
+				content += '<strong>Ingredients:</strong><ul>';
+				Object.entries(parsedRecipeObj.ingredients).forEach(([ingredient, quantity]) => {
+				  content += `<li>${ingredient}: ${quantity}</li>`;
+				});
+				content += '</ul>';
+				content += '<strong>Cooking Steps:</strong><ol>';
+				parsedRecipeObj.instructions.forEach(step => {
+				  content += `<li>${step}</li>`;
+				});
+				content += '</ol>';
+
+				textElement.innerHTML = content;
+			  } else {
+				console.error("Error: textElement not found");
+			  }
+			} catch (e) {
+			  console.error("Error parsing the recipe:", e);
+			}
+		  })
+		  .catch(error => {
+			console.error('Error loading the generated text:', error);
+		  });
+    </script>
 
 
 </div></div></div><div class="fe-block fe-block-b05fbb6cd996cf9be64a" style="mix-blend-mode: normal;"><div class="sqs-block html-block sqs-block-html" data-blend-mode="NORMAL" data-block-type="2" data-border-radii="{&quot;topLeft&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;topRight&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;bottomLeft&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;bottomRight&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0}}" id="block-b05fbb6cd996cf9be64a"><div class="sqs-block-content">
