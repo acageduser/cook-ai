@@ -40,6 +40,194 @@
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='./css/site.css') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='./css/static.css') }}">
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<style>
+    #notification-banner {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        background: #28a745;
+        color: white;
+        text-align: center;
+        padding: 10px;
+        font-size: 16px;
+        z-index: 10000;
+        display: none;
+    }
+
+    #notification-banner.error {
+        background: #dc3545;
+    }
+
+	.food-name {
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		width: 100%; /* Ensure it uses the full width of its column */
+	}
+
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        min-height: 100vh;
+        background-color: #f4f4f4;
+        margin: 0;
+    }
+
+    #recipes-container {
+        width: 100%;
+        max-width: 600px;
+        margin-bottom: 30px;
+    }
+
+    .react-form-contents {
+        width: 100%;
+        max-width: 600px;
+        background: white;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+    }
+
+    .react-form-contents .field-list {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .react-form-contents .form-item {
+        margin-bottom: 15px;
+    }
+
+    .react-form-contents .title {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+
+    .react-form-contents .form-control {
+        width: 100%;
+        padding: 10px;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .react-form-contents .form-button-wrapper {
+        width: 100%;
+        margin-top: 20px;
+    }
+
+    .react-form-contents .button {
+        width: 100%;
+        padding: 15px;
+        background-color: #3F5A36; /* Forest green */
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        text-align: center;
+        font-size: 16px;
+    }
+
+    .react-form-contents .button:hover {
+        background-color: #2E4625; /* Darker green */
+    }
+
+    #loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+
+    .spinner {
+        border: 30px solid #f3f3f3; /* Light grey */
+        border-top: 16px solid #3F5A36; /* Forest green */
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        animation: spin 1.5s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+	.edit-food-container {
+		display: flex;
+		align-items: center;
+		gap: 5px; /* Add some space between the input and the button */
+	}
+
+	.edit-food-container input {
+		flex: 1;
+		min-width: 0;
+	}
+
+	.edit-food-container button {
+		white-space: nowrap;
+	}
+
+    /* Ensure the table layout does not shift */
+    table {
+        width: 100%;
+        table-layout: fixed;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: left;
+    }
+
+    td {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .truncate {
+        display: block;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+    }
+	
+	/* Add a class for the edit food column */
+	.edit-food-column {
+		width: 70%; /* Adjust this to make the column twice as wide */
+	}
+
+	/* Ensure the other columns have equal widths */
+	.food-name-column,
+	.delete-food-column {
+		width: 25%;
+	}
+
+	/* Ensure the table uses these widths */
+	#food-list-table {
+		width: 140%;
+		table-layout: fixed; /* Ensures columns respect the specified widths */
+	}
+	
+	/* Adjust the position of the delete button */
+	.edit-food-container button:last-child {
+		transform: translateY(5%);
+	}
+</style>
+
+
   </head>
 
   <body id="collection-660de90d139aa96bf6550e04" class="primary-button-style-solid primary-button-shape-square secondary-button-style-solid secondary-button-shape-square tertiary-button-style-solid tertiary-button-shape-square form-use-theme-colors form-field-style-solid form-field-shape-square form-field-border-all form-field-checkbox-type-icon form-field-checkbox-fill-solid form-field-checkbox-color-inverted form-field-checkbox-shape-square form-field-checkbox-layout-stack form-field-radio-type-icon form-field-radio-fill-solid form-field-radio-color-normal form-field-radio-shape-pill form-field-radio-layout-stack form-field-survey-fill-solid form-field-survey-color-normal form-field-survey-shape-pill form-field-hover-focus-outline form-submit-button-style-label header-overlay-alignment-center header-width-full tweak-transparent-header  tweak-fixed-header-style-scroll-back tweak-blog-alternating-side-by-side-width-inset tweak-blog-alternating-side-by-side-image-aspect-ratio-32-standard tweak-blog-alternating-side-by-side-text-alignment-left tweak-blog-alternating-side-by-side-read-more-style-hide tweak-blog-alternating-side-by-side-image-text-alignment-middle tweak-blog-alternating-side-by-side-delimiter-bullet tweak-blog-alternating-side-by-side-meta-position-below-excerpt tweak-blog-alternating-side-by-side-primary-meta-categories tweak-blog-alternating-side-by-side-secondary-meta-date tweak-blog-alternating-side-by-side-excerpt-show tweak-blog-basic-grid-width-full tweak-blog-basic-grid-image-aspect-ratio-32-standard tweak-blog-basic-grid-text-alignment-left tweak-blog-basic-grid-delimiter-bullet tweak-blog-basic-grid-image-placement-above tweak-blog-basic-grid-read-more-style-show tweak-blog-basic-grid-primary-meta-categories tweak-blog-basic-grid-secondary-meta-date tweak-blog-basic-grid-excerpt-show tweak-blog-item-width-narrow tweak-blog-item-text-alignment-left tweak-blog-item-meta-position-below-title tweak-blog-item-show-categories tweak-blog-item-show-date   tweak-blog-item-delimiter-bullet tweak-blog-masonry-width-inset tweak-blog-masonry-text-alignment-center tweak-blog-masonry-primary-meta-categories tweak-blog-masonry-secondary-meta-date tweak-blog-masonry-meta-position-top tweak-blog-masonry-read-more-style-show tweak-blog-masonry-delimiter-space tweak-blog-masonry-image-placement-above tweak-blog-masonry-excerpt-hide tweak-blog-side-by-side-width-full tweak-blog-side-by-side-image-placement-left tweak-blog-side-by-side-image-aspect-ratio-11-square tweak-blog-side-by-side-primary-meta-categories tweak-blog-side-by-side-secondary-meta-date tweak-blog-side-by-side-meta-position-top tweak-blog-side-by-side-text-alignment-left tweak-blog-side-by-side-image-text-alignment-middle tweak-blog-side-by-side-read-more-style-show tweak-blog-side-by-side-delimiter-bullet tweak-blog-side-by-side-excerpt-show tweak-blog-single-column-width-full tweak-blog-single-column-text-alignment-center tweak-blog-single-column-image-placement-above tweak-blog-single-column-delimiter-bullet tweak-blog-single-column-read-more-style-show tweak-blog-single-column-primary-meta-categories tweak-blog-single-column-secondary-meta-date tweak-blog-single-column-meta-position-top tweak-blog-single-column-content-full-post tweak-events-stacked-width-full tweak-events-stacked-height-large  tweak-events-stacked-show-thumbnails tweak-events-stacked-thumbnail-size-32-standard tweak-events-stacked-date-style-with-text tweak-events-stacked-show-time tweak-events-stacked-show-location  tweak-events-stacked-show-excerpt  tweak-global-animations-enabled tweak-global-animations-complexity-level-detailed tweak-global-animations-animation-style-fade tweak-global-animations-animation-type-fade tweak-global-animations-animation-curve-ease tweak-portfolio-grid-basic-width-full tweak-portfolio-grid-basic-height-large tweak-portfolio-grid-basic-image-aspect-ratio-11-square tweak-portfolio-grid-basic-text-alignment-left tweak-portfolio-grid-basic-hover-effect-fade tweak-portfolio-grid-overlay-width-full tweak-portfolio-grid-overlay-height-large tweak-portfolio-grid-overlay-image-aspect-ratio-11-square tweak-portfolio-grid-overlay-text-placement-center tweak-portfolio-grid-overlay-show-text-after-hover tweak-portfolio-index-background-link-format-stacked tweak-portfolio-index-background-width-full tweak-portfolio-index-background-height-large  tweak-portfolio-index-background-vertical-alignment-middle tweak-portfolio-index-background-horizontal-alignment-center tweak-portfolio-index-background-delimiter-none tweak-portfolio-index-background-animation-type-fade tweak-portfolio-index-background-animation-duration-medium tweak-portfolio-hover-follow-layout-inline  tweak-portfolio-hover-follow-delimiter-forward-slash tweak-portfolio-hover-follow-animation-type-fade tweak-portfolio-hover-follow-animation-duration-medium tweak-portfolio-hover-static-layout-stacked  tweak-portfolio-hover-static-delimiter-forward-slash tweak-portfolio-hover-static-animation-type-scale-up tweak-portfolio-hover-static-animation-duration-medium tweak-product-basic-item-product-variant-display-dropdown tweak-product-basic-item-width-full tweak-product-basic-item-gallery-aspect-ratio-34-three-four-vertical tweak-product-basic-item-text-alignment-left tweak-product-basic-item-navigation-breadcrumbs tweak-product-basic-item-content-alignment-top tweak-product-basic-item-gallery-design-slideshow tweak-product-basic-item-gallery-placement-left tweak-product-basic-item-thumbnail-placement-side tweak-product-basic-item-click-action-none tweak-product-basic-item-hover-action-none tweak-product-basic-item-variant-picker-layout-dropdowns tweak-products-width-full tweak-products-image-aspect-ratio-11-square tweak-products-text-alignment-left  tweak-products-price-show tweak-products-nested-category-type-top tweak-products-category-title tweak-products-header-text-alignment-middle tweak-products-breadcrumbs image-block-poster-text-alignment-center image-block-card-content-position-center image-block-card-text-alignment-left image-block-overlap-content-position-center image-block-overlap-text-alignment-left image-block-collage-content-position-center image-block-collage-text-alignment-left image-block-stack-text-alignment-left hide-opentable-icons opentable-style-dark tweak-product-quick-view-button-style-floating tweak-product-quick-view-button-position-bottom tweak-product-quick-view-lightbox-excerpt-display-truncate tweak-product-quick-view-lightbox-show-arrows tweak-product-quick-view-lightbox-show-close-button tweak-product-quick-view-lightbox-controls-weight-light native-currency-code-usd collection-type-page collection-660de90d139aa96bf6550e04 collection-layout-default mobile-style-available sqs-seven-one
@@ -1458,7 +1646,7 @@
   
   <style data-section-divider-style="">
       [data-section-id="660dedd267c80633dd134c55"] { 
-        --divider-height: 6vw; 
+        --divider-height: 2vw; 
         --z-index: 4;
       }
     
@@ -1908,188 +2096,259 @@
 </style><div class="fluid-engine fe-661def5199c39718a0f1d245" id="yui_3_17_2_1_1713238337998_89"><div class="fe-block fe-block-0791ab0b1718dbd8d31f" style="mix-blend-mode: normal;"><div class="sqs-block html-block sqs-block-html" data-blend-mode="NORMAL" data-block-type="2" data-border-radii="{&quot;topLeft&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;topRight&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;bottomLeft&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;bottomRight&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0}}" id="block-0791ab0b1718dbd8d31f"><div class="sqs-block-content">
 
 <div class="sqs-html-content">
-  <h2 style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0580645s;" class="preFade fadeIn">Ingredients List</h2><p class="preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0619355s;">Here is a sample fridge with ingredients from multiple categories. The generated recipe may include any combination and quantity of these items</p>
+  <h2 style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0580645s;" class="preFade fadeIn">Ingredients List</h2><p class="preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0619355s;">Here is the place to upload your grocery haul picture, and view and edit your fridge</p>
 </div>
 
+<!-- Notification Banner -->
+<div id="notification-banner">This is a notification</div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-
-
-
-</div></div></div><div class="fe-block fe-block-56e191454404f7aca32c" style="mix-blend-mode: normal;"><div class="sqs-block html-block sqs-block-html" data-blend-mode="NORMAL" data-block-type="2" data-border-radii="{&quot;topLeft&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;topRight&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;bottomLeft&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;bottomRight&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0}}" id="block-56e191454404f7aca32c"><div class="sqs-block-content">
-
-<div class="sqs-html-content">
-  <h4 style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0658065s;" class="preFade">Vegetables</h4><ul data-rte-list="default"><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0696774s;">Potatoes</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0735484s;">Onions</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0774194s;">Bell Pepper</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0812903s;">Carrots</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0851613s;">Lettuce</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0890323s;">Spinach</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0929032s;">Celery</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0967742s;">Tomatoes</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.100645s;">Jalapeños</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.104516s;">Broccoli</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.108387s;">Cauliflower</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.112258s;">Cucumber</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.116129s;">Zucchini</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.12s;">Mushrooms</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.123871s;">Green beans</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.127742s;">Radishes</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.131613s;">Corn</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.135484s;">Asparagus</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.139355s;">Peas</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.143226s;">Eggplant</p></li></ul>
+<!-- Loading Overlay -->
+<div id="loading-overlay" style="display:none;">
+    <div class="spinner"></div>
 </div>
 
+<!-- Form for uploading grocery haul -->
+<h2>Upload Grocery Haul</h2>
+<p>Take a picture of your grocery haul to automatically 'bulk add' it to the list. Tip: Lay everything out first so all the labels are visible for best results.</p>
+<form id="upload-image-form" class="react-form-contents" enctype="multipart/form-data">
+    <div class="field-list">
+        <div class="form-item field text required" id="text-api-key" data-dynamic-strings="">
+            <label for="api_key" class="title">API Key:</label>
+            <input type="text" name="api_key" class="form-control" id="api_key" placeholder="Add your OpenAI API Key" required>
+        </div>
+        <div class="form-item field file required" id="file-upload">
+            <label for="file" class="title">Select image to upload:</label>
+            <input type="file" name="file" class="form-control" id="file" accept="image/*" required>
+        </div>
+    </div>
+    <div class="form-button-wrapper">
+        <button type="submit" class="button sqs-system-button sqs-editable-button form-submit-button sqs-button-element--primary">Upload Image</button>
+    </div>
+</form>
+<div id="upload-response"></div>
+
+<h2>Generate Recipes</h2>
+<p>Get recipe inspiration from ONLY ingredients in your Fridge.</p>
+<form id="generate-recipes-form" class="react-form-contents">
+    <div class="field-list">
+        <div class="form-item field text required" id="text-generate-api-key" data-dynamic-strings="">
+            <label for="api_key_recipes" class="title">API Key:</label>
+            <input type="text" name="api_key_recipes" class="form-control" id="api_key_recipes" placeholder="Add your OpenAI API Key" required>
+        </div>
+    </div>
+    <div class="form-button-wrapper">
+        <button type="submit" class="button sqs-system-button sqs-editable-button form-submit-button sqs-button-element--primary">Generate Recipes</button>
+    </div>
+</form>
+
+<div id="recipes-container"></div>
+
+<h2>Current Food List</h2>
+<p>Add, edit, and Remove from your Fridge.</p>
+<table id="food-list-table">
+    <thead>
+        <tr>
+            <th>Name of Food</th>
+            <th>Edit Food</th>
+            <th>Delete Food</th>
+        </tr>
+    </thead>
+    <tbody id="food-list-body">
+        <!-- Food rows will be dynamically added here -->
+    </tbody>
+</table>
+
+<!-- Add new food section -->
+<h3>Add New Food</h3>
+<input type="text" id="new-food-input" placeholder="Enter new food name">
+<button id="add-new-food-btn">Add Food</button>
+
+<!-- Clear all food section -->
+<h3>Clear ALL Current Food List</h3>
+<button id="clear-all-food-btn">Clear ALL Foods</button>
+
+<script>
+    $(document).ready(function() {
+        // Function to show notification banner
+        function showNotification(message, isError = false) {
+            const banner = $('#notification-banner');
+            banner.text(message);
+            if (isError) {
+                banner.addClass('error');
+            } else {
+                banner.removeClass('error');
+            }
+            banner.slideDown();
+            setTimeout(() => {
+                banner.slideUp();
+            }, 2000);
+        }
+
+        // Handle image upload
+        $('#upload-image-form').submit(function(event) {
+            event.preventDefault(); // Prevent the form from submitting the traditional way
+
+            const formData = new FormData(this);
+
+            // Show the loading overlay
+            $('#loading-overlay').show();
+
+            $.ajax({
+                url: '/upload-haul',
+                method: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    $('#upload-response').html('<p>Upload complete</p>');
+                    showNotification('Upload complete');
+                    loadFoodList();
+                },
+                error: function(xhr) {
+                    showNotification(`Failed to upload image: ${xhr.responseText}`, true);
+                },
+                complete: function() {
+                    // Hide the loading overlay
+                    $('#loading-overlay').hide();
+                }
+            });
+        });
+
+        // Handle recipe generation
+        $('#generate-recipes-form').submit(function(event) {
+            event.preventDefault(); // Prevent the form from submitting the traditional way
+
+            const apiKey = $('#api_key_recipes').val();
+
+            // Show the loading overlay
+            $('#loading-overlay').show();
+
+            $.ajax({
+                url: '/generate-recipes',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ api_key_recipes: apiKey }),
+                success: function(response) {
+                    let recipesHtml = '<h2>Generated Recipes:</h2><ul>';
+                    response.recipes.forEach(recipe => {
+                        recipesHtml += `<li><strong>${recipe.title}</strong>: ${recipe.ingredients.join(', ')}</li>`;
+                    });
+                    recipesHtml += '</ul>';
+                    $('#recipes-container').html(recipesHtml);
+                    showNotification('Recipes generated successfully!');
+                },
+                error: function(xhr) {
+                    showNotification(`Failed to generate recipes: ${xhr.responseJSON.error}`, true);
+                },
+                complete: function() {
+                    // Hide the loading overlay
+                    $('#loading-overlay').hide();
+                }
+            });
+        });
+
+		// Load the current food list from the server
+		function loadFoodList() {
+			$.getJSON('/get-food-list', function(data) {
+				const foodListBody = $('#food-list-body');
+				foodListBody.empty(); // Clear the table body
+
+				data.ingredients.forEach((food, index) => {
+					const row = $('<tr>');
+					row.append(`<td class="food-name-column food-name">${food}</td>`);
+					row.append(`
+						<td class="edit-food-column edit-food-container">
+							<input type="text" id="edit-food-${index}" value="${food}">
+							<button onclick="saveFood(${index})">Save</button>
+						</td>
+					`);
+					row.append(`<td class="delete-food-column"><button onclick="deleteFood(${index})">Delete</button></td>`);
+					foodListBody.append(row);
+				});
+			});
+		}
+
+        // Initial load of food list
+        loadFoodList();
+
+        // Save edited food
+        window.saveFood = function(index) {
+            const newName = $(`#edit-food-${index}`).val();
+            $.ajax({
+                url: '/save-food',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ index, new_name: newName }),
+                success: function(response) {
+                    showNotification('Food name updated successfully!');
+                    loadFoodList();
+                },
+                error: function(xhr) {
+                    showNotification(`Failed to save food: ${xhr.responseText}`, true);
+                }
+            });
+        };
+
+        // Delete food
+        window.deleteFood = function(index) {
+            $.ajax({
+                url: '/delete-food',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ index }),
+                success: function(response) {
+                    showNotification('Food deleted successfully!');
+                    loadFoodList();
+                },
+                error: function(xhr) {
+                    showNotification(`Failed to delete food: ${xhr.responseText}`, true);
+                }
+            });
+        };
+
+        // Add new food
+        $('#add-new-food-btn').click(function() {
+            const newFood = $('#new-food-input').val();
+            if (newFood) {
+                $.ajax({
+                    url: '/add-food',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ newFood }),
+                    success: function(response) {
+                        showNotification(response.message);
+                        $('#new-food-input').val('');
+                        loadFoodList();
+                    },
+                    error: function(xhr) {
+                        showNotification(`Failed to add food: ${xhr.responseText}`, true);
+                    }
+                });
+            } else {
+                showNotification('Please enter a food name.', true);
+            }
+        });
+
+        // Clear all foods
+        $('#clear-all-food-btn').click(function() {
+            $.ajax({
+                url: '/clear-food-list',
+                method: 'POST',
+                success: function(response) {
+                    showNotification('All food items cleared successfully!');
+                    loadFoodList();
+                },
+                error: function(xhr) {
+                    showNotification(`Failed to clear food list: ${xhr.responseText}`, true);
+                }
+            });
+        });
+    });
+</script>
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-
-
-
-</div></div></div><div class="fe-block fe-block-6defac95d2c75d334763" style="mix-blend-mode: normal;"><div class="sqs-block html-block sqs-block-html" data-blend-mode="NORMAL" data-block-type="2" data-border-radii="{&quot;topLeft&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;topRight&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;bottomLeft&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;bottomRight&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0}}" id="block-6defac95d2c75d334763"><div class="sqs-block-content">
-
-<div class="sqs-html-content">
-  <h4 style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.147097s;" class="preFade">Grains, Legumes, Nuts, &amp; Seeds</h4><ul data-rte-list="default"><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.150968s;">Black Beans</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.154839s;">Garbanzo Beans</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.15871s;">White Rice</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.162581s;">Angel Hair Pasta</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.166452s;">Brown Sugar</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.170323s;">Peanuts</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.174194s;">Sesame Seeds</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.178065s;">Lentils</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.181935s;">Quinoa</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.185806s;">Almonds</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.189677s;">Walnuts</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.193548s;">Flaxseeds</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.197419s;">Chia seeds</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.20129s;">Sunflower seeds</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.205161s;">Rolled oats</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.209032s;">Farro</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.212903s;">Couscous</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.216774s;">Buckwheat</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.220645s;">Hemp seeds</p></li></ul>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-
-
-
-</div></div></div><div class="fe-block fe-block-5475d2e729c26b101f3c" style="mix-blend-mode: normal;"><div class="sqs-block html-block sqs-block-html" data-blend-mode="NORMAL" data-block-type="2" data-border-radii="{&quot;topLeft&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;topRight&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;bottomLeft&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;bottomRight&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0}}" id="block-5475d2e729c26b101f3c"><div class="sqs-block-content">
-
-<div class="sqs-html-content">
-  <h4 style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.224516s;" class="preFade">Herbs &amp; Spices</h4><ul data-rte-list="default"><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.228387s;">Dill</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.232258s;">Cumin</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.236129s;">Smoked Paprika</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.24s;">Cayenne</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.243871s;">Oregano</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.247742s;">Salt</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.251613s;">Pepper</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.255484s;">Basil</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.259355s;">Parsley</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.263226s;">Rosemary</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.267097s;">Thyme</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.270968s;">Garlic powder</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.274839s;">Onion powder</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.27871s;">Chili powder</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.282581s;">Turmeric</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.286452s;">Coriander</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.290323s;">Bay leaves</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.294194s;">Cinnamon</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.298065s;">Nutmeg</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.301935s;">Ginger</p></li></ul>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-
-
-
-</div></div></div><div class="fe-block fe-block-6071e2d91357e4c42733" style="mix-blend-mode: normal;"><div class="sqs-block html-block sqs-block-html" data-blend-mode="NORMAL" data-block-type="2" data-border-radii="{&quot;topLeft&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;topRight&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;bottomLeft&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;bottomRight&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0}}" id="block-6071e2d91357e4c42733"><div class="sqs-block-content">
-
-<div class="sqs-html-content">
-  <h4 style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.305806s;" class="preFade">Bread and Wraps Selection</h4><ul data-rte-list="default"><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.309677s;">Tortilla Wrap</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.313548s;">Sliced White Bread</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.317419s;">Flatbread</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.32129s;">Croissant</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.325161s;">Bagel</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.329032s;">Biscuit</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.332903s;">Hamburger Bun</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.336774s;">Hot Dog Roll</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.340645s;">White Sub Roll</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.344516s;">Whole wheat tortilla wrap</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.348387s;">Multigrain bread</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.352258s;">Pita bread</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.356129s;">Naan</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.36s;">English muffin</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.363871s;">Ciabatta roll</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.367742s;">Pretzel bun</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.371613s;">Rye bread</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.375484s;">Sourdough bread</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.379355s;">French baguette</p></li></ul>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-
-
-
-</div></div></div><div class="fe-block fe-block-03e2241c8233727cfdc5" style="mix-blend-mode: normal;"><div class="sqs-block html-block sqs-block-html" data-blend-mode="NORMAL" data-block-type="2" data-border-radii="{&quot;topLeft&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;topRight&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;bottomLeft&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;bottomRight&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0}}" id="block-03e2241c8233727cfdc5"><div class="sqs-block-content">
-
-<div class="sqs-html-content">
-  <h4 style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.383226s;" class="preFade">Condiments, Oils, &amp; Flavors</h4><ul data-rte-list="default"><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.387097s;">Vinegar</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.390968s;">Tomato Paste</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.394839s;">Olive Oil</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.39871s;">Canola Oil</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.402581s;">Ketchup</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.406452s;">Lemon</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.410323s;">Lime</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.414194s;">Soy sauce</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.418065s;">Honey</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.421935s;">Mustard</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.425806s;">Worcestershire sauce</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.429677s;">Hot sauce</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.433548s;">Balsamic glaze</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.437419s;">Sesame oil</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.44129s;">Fish sauce</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.445161s;">Maple syrup</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.449032s;">Apple cider vinegar</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.452903s;">Barbecue sauce</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.456774s;">Mayonnaise</p></li></ul>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-  
-
-
-
-</div></div></div><div class="fe-block fe-block-ad6792ed7d2ef90b4a4b" style="mix-blend-mode: normal;"><div class="sqs-block html-block sqs-block-html" data-blend-mode="NORMAL" data-block-type="2" data-border-radii="{&quot;topLeft&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;topRight&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;bottomLeft&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;bottomRight&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0}}" id="block-ad6792ed7d2ef90b4a4b"><div class="sqs-block-content">
-
-<div class="sqs-html-content">
-  <h4 style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.460645s;" class="preFade">Protein &amp; Dairy</h4><ul data-rte-list="default"><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.464516s;">Chicken Wings</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.468387s;">Shredded Beef</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.472258s;">Salmon</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.476129s;">Eggs</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.48s;">Milk</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.483871s;">Butter</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.487742s;">Shredded Cheddar Cheese</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.491613s;">Parmesan</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.495484s;">Yogurt</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.499355s;">Ground beef</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.503226s;">Turkey breast</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.507097s;">Tofu</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.510968s;">Pork chops</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.514839s;">Shrimp</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.51871s;">Tuna</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.522581s;">Lentils</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.526452s;">Chickpeas</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.530323s;">Tempeh</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.534194s;">Quinoa</p></li><li><p class="sqsrte-small preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.538065s;">Cottage Cheese</p></li></ul>
-</div>
 
 
 

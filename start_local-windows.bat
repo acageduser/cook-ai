@@ -42,6 +42,13 @@ echo +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 echo.
 pip install openai==1.35.15
 
+:: Upgrade to a specific version of the OpenAI API
+echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+echo +                        Install Flask Pillow requests                       +
+echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+echo.
+pip install Flask Pillow requests
+
 :: Run the Flask application
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 echo +                          Running the Flask Application                     +
