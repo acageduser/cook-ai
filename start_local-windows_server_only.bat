@@ -12,11 +12,10 @@ cd /d "%~dp0"
 
 :: Activate the virtual environment
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-echo +                        Activating Virtual Environment                     +
+echo +                        Activating Virtual Environment                      +
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 echo.
 call venv\Scripts\activate
-
 
 :: Run the Flask application
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
