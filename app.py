@@ -8,6 +8,8 @@ import requests
 
 app = Flask(__name__)
 
+food_list_file = os.path.join(app.root_path, 'haul', 'haul.json')
+
 @app.route('/response/<filename>')
 def response(filename):
     return send_from_directory('response', filename)
