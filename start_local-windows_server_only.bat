@@ -17,12 +17,6 @@ echo +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 echo.
 call venv\Scripts\activate
 
-:: Ensure all dependencies are installed
-echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-echo +                       Installing Required Dependencies                     +
-echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-echo.
-pip install -r requirements.txt
 
 :: Run the Flask application
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
