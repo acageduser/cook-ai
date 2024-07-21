@@ -41,46 +41,70 @@
 <!-- Styles for Loading Overlay and Notification Banner -->
 <!-- Styles for Loading Overlay and Notification Banner -->
 	<style>
-	  #loading-overlay {
-		position: fixed;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		background: rgba(0, 0, 0, 0.5);
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		z-index: 9998;
-	  }
-	  .spinner {
-		border: 30px solid #f3f3f3; /* Light grey */
-		border-top: 16px solid #3F5A36; /* Forest green */
-		border-radius: 50%;
-		width: 120px;
-		height: 120px;
-		animation: spin 1.5s linear infinite;
-	  }
-	  @keyframes spin {
-		0% { transform: rotate(0deg); }
-		100% { transform: rotate(360deg); }
-	  }
-	  #notification-banner {
-		position: fixed;
-		bottom: 0;
-		left: 0;
-		width: 100%;
-		background: #28a745;
-		color: white;
-		text-align: center;
-		padding: 10px;
-		font-size: 16px;
-		z-index: 9999;
-		display: none;
-	  }
-	  #notification-banner.error {
-		background: #dc3545;
-	  }
+		#loading-overlay {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.5);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			z-index: 9999;
+		}
+		.spinner {
+			border: 30px solid #f3f3f3; /* Light grey */
+			border-top: 16px solid #3F5A36; /* Forest green */
+			border-radius: 50%;
+			width: 120px;
+			height: 120px;
+			animation: spin 1.5s linear infinite;
+		}
+		@keyframes spin {
+			0% { transform: rotate(0deg); }
+			100% { transform: rotate(360deg); }
+		}
+		#loading-overlay {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background: rgba(0, 0, 0, 0.5);
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			z-index: 9998;
+		}
+		.spinner {
+			border: 30px solid #f3f3f3; /* Light grey */
+			border-top: 16px solid #3F5A36; /* Forest green */
+			border-radius: 50%;
+			width: 120px;
+			height: 120px;
+			animation: spin 1.5s linear infinite;
+		}
+		@keyframes spin {
+			0% { transform: rotate(0deg); }
+			100% { transform: rotate(360deg); }
+		}
+		#notification-banner {
+			position: fixed;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			background: #28a745;
+			color: white;
+			text-align: center;
+			padding: 10px;
+			font-size: 16px;
+			z-index: 9999;
+			display: none;
+		}
+		#notification-banner.error {
+			background: #dc3545;
+		}
 	</style>
 
   </head>
@@ -1440,101 +1464,82 @@
 	</div>
 
 	<!-- JavaScript for handling the form submission and showing the overlay -->
-	<script>
-	  document.addEventListener("DOMContentLoaded", function() {
-		const form = document.getElementById("generate-form");
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const form = document.getElementById("generate-form");
 
-		form.addEventListener("submit", function(event) {
-		  event.preventDefault(); // Prevent the form from submitting the traditional way
+        form.addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent the form from submitting the traditional way
 
-		  const user_input = document.querySelector("input[name='user_input']").value;
-		  const api_key = document.querySelector("input[name='api_key']").value;
+            const user_input = document.querySelector("input[name='user_input']").value;
+            const api_key = document.querySelector("input[name='api_key']").value;
 
-		  // Show the loading overlay
-		  document.getElementById("loading-overlay").style.display = "flex";
+            // Show the loading overlay
+            document.getElementById("loading-overlay").style.display = "flex";
 
-		  // Make an AJAX request to check if haul.json exists
-		  fetch('/check-haul')
-			.then(response => response.json())
-			.then(data => {
-			  if (data.exists) {
-				// If the file exists, submit the form data to the generate endpoint
-				fetch('/generate', {
-				  method: 'POST',
-				  headers: {
-					'Content-Type': 'application/json',
-				  },
-				  body: JSON.stringify({ user_input: user_input, api_key: api_key }),
-				})
-				  .then(response => response.json())
-				  .then(result => {
-					// Handle the result of the generate endpoint
-					console.log("Recipe generated successfully");
-					document.getElementById("loading-overlay").style.display = "none";
-					window.location.href = '/generate'; // Redirect to the generate page
-				  })
-				  .catch(error => {
-					console.error('Error generating recipe:', error);
-					showNotification('Failed to generate recipe.', true);
-					document.getElementById("loading-overlay").style.display = "none";
-				  });
-			  } else {
-				// If the file does not exist, show a notification and hide the loading overlay
-				showNotification('No ingredients found. Please add items to your fridge first.', true);
-				document.getElementById("loading-overlay").style.display = "none";
-			  }
-			})
-			.catch(error => {
-			  console.error('Error checking haul.json:', error);
-			  showNotification('There is nothing in your fridge! Add items to your fridge first!', true);
-			  document.getElementById("loading-overlay").style.display = "none";
-			});
-		});
+            // Make an AJAX request to check if haul.json exists
+            fetch('/check-haul')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.exists) {
+                        // If the file exists, submit the form data to the generate endpoint
+                        fetch('/generate', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ user_input: user_input, api_key: api_key }),
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(result => {
+                            if (result.error) {
+                                throw new Error(result.error);
+                            }
+                            // Handle the result of the generate endpoint
+                            console.log("Recipe generated successfully");
+                            document.getElementById("loading-overlay").style.display = "none";
+                            window.location.href = '/generate'; // Redirect to the generate page
+                        })
+                        .catch(error => {
+                            console.error('Error generating recipe:', error);
+                            showNotification('Failed to generate recipe.', true);
+                            document.getElementById("loading-overlay").style.display = "none";
+                        });
+                    } else {
+                        // If the file does not exist, show a notification and hide the loading overlay
+                        showNotification('No ingredients found. Please add items to your fridge first.', true);
+                        document.getElementById("loading-overlay").style.display = "none";
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking haul.json:', error);
+                    showNotification('There is nothing in your fridge! Add items to your fridge first!', true);
+                    document.getElementById("loading-overlay").style.display = "none";
+                });
+        });
 
-		// Function to show notification banner
-		function showNotification(message, isError = false) {
-		  const banner = document.getElementById("notification-banner");
-		  banner.textContent = message;
-		  if (isError) {
-			banner.classList.add("error");
-		  } else {
-			banner.classList.remove("error");
-		  }
-		  banner.style.display = "block";
-		  setTimeout(() => {
-			banner.style.display = "none";
-		  }, 2000);
-		}
-	  });
-	</script>
+        // Function to show notification banner
+        function showNotification(message, isError = false) {
+            const banner = document.getElementById("notification-banner");
+            banner.textContent = message;
+            if (isError) {
+                banner.classList.add("error");
+            } else {
+                banner.classList.remove("error");
+            }
+            banner.style.display = "block";
+            setTimeout(() => {
+                banner.style.display = "none";
+            }, 2000);
+        }
+    });
+</script>
 
-  <!-- Styles for Loading Overlay -->
-<style>
-    #loading-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-    }
-    .spinner {
-        border: 30px solid #f3f3f3; /* Light grey */
-        border-top: 16px solid #3F5A36; /* Forest green */
-        border-radius: 50%;
-        width: 120px;
-        height: 120px;
-        animation: spin 1.5s linear infinite;
-    }
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-</style>
 
   <!-- JavaScript for handling the form submission and showing the overlay -->
   <script>

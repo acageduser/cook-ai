@@ -2250,7 +2250,14 @@
                     showNotification('Recipes generated successfully!');
                 },
                 error: function(xhr) {
-                    showNotification(`Failed to generate recipes: ${xhr.responseJSON.error}`, true);
+                    let errorMessage = 'An error occurred while generating recipes';
+                    try {
+                        const responseJSON = JSON.parse(xhr.responseText);
+                        errorMessage = responseJSON.error;
+                    } catch (e) {
+                        errorMessage = 'An unexpected error occurred';
+                    }
+                    showNotification(`Failed to generate recipes: ${errorMessage}`, true);
                 },
                 complete: function() {
                     // Hide the loading overlay

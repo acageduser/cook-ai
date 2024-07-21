@@ -49,107 +49,120 @@ def flatten_ingredients(ingredients):
             flattened[key] = value
     return flattened
 
-@app.route('/generate', methods=['POST'])
+@app.route('/generate', methods=['GET', 'POST'])
 def generate():
-    api_key = request.form['api_key']
-    user_input = request.form['user_input']
+    if request.method == 'POST':
+        data = request.get_json()
+        api_key = data.get('api_key')
+        user_input = data.get('user_input')
 
-    # Check for API key and user input
-    if not api_key:
-        return "API key is required", 400
-    if not user_input:
-        return "User input is required", 400
+        # Check for API key and user input
+        if not api_key:
+            return jsonify(error="API key is required"), 400
+        if not user_input:
+            return jsonify(error="User input is required"), 400
         
-    # Check if the haul.json file exists
-    haul_filepath = os.path.join(app.root_path, 'haul', 'haul.json')
-    if not os.path.exists(haul_filepath):
-        return "No ingredients found. Please add items to your fridge first.", 400
+        # Check if the haul.json file exists
+        haul_filepath = os.path.join(app.root_path, 'haul', 'haul.json')
+        if not os.path.exists(haul_filepath):
+            return jsonify(error="No ingredients found. Please add items to your fridge first."), 400
 
-    try:
-        with open(haul_filepath, 'r') as file:
-            ingredients_list = json.load(file)
-            if not ingredients_list:
-                return "No ingredients found in haul.json", 400
-    except Exception as e:
-        return f"Error reading haul.json: {str(e)}", 500
-
-    # Construct the prompt for the OpenAI API
-    prompt_parts = [
-        "We are creating a recipe. The output should be in JSON format with specific sections with no additional comments.",
-        "The JSON structure should include 'title', 'serving_size', 'ingredients', and 'instructions' in that order.",
-        "Start with a 'title' section, followed by 'serving_size'. Then, 'serving_size' should be 4.",
-        "Each ingredient must have a measurement indicating how much to use of that ingredient.",
-        (
-            "Finally, provide 'instructions' as an ordered list. You do not have to use all the ingredients in the following list. "
-            "The 'instructions' section needs to include the minutes it will take to cook each ingredient in plain sentence format. "
-            "Only use what you need for the recipe. If the following list does not include an ingredient, do NOT include it. "
-            f"Here is the list of ingredients to choose from: {', '.join(ingredients_list)}"
-        ),
-        "Please format the ingredients as a JSON object.",
-        f"The food I want to make is: {user_input}"
-    ]
-    final_prompt = " ".join(prompt_parts)
-    
-    max_attempts = 15
-    attempt_counter = 0
-    response_file_path = os.path.join(app.root_path, 'response', 'out.json')
-
-    while attempt_counter < max_attempts:
-        attempt_counter += 1
         try:
-            # Create an OpenAI client instance
-            client = OpenAI(api_key=api_key)
-
-            # Generate a chat completion
-            response = client.chat.completions.create(
-                messages=[{"role": "user", "content": final_prompt}],
-                model="gpt-3.5-turbo"
-            )
-
-            # Extract the generated text
-            generated_text = response.choices[0].message.content
-
-            # Check and create the 'response' directory if it does not exist
-            directory = os.path.join(app.root_path, 'response')
-            if not os.path.exists(directory):
-                os.makedirs(directory)
-
-            # Save the generated text to a JSON file in the 'response' folder
-            with open(response_file_path, 'w') as outfile:
-                json.dump({'generated_text': generated_text}, outfile)
-
-            # Validate the JSON file
-            if validate_json(response_file_path):
-                break  # Exit the loop if the JSON is valid
-            else:
-                print(f"Attempt {attempt_counter} failed. Invalid JSON format. Retrying...")
-
+            with open(haul_filepath, 'r') as file:
+                ingredients_list = json.load(file)
+                if not ingredients_list:
+                    return jsonify(error="No ingredients found in haul.json"), 400
         except Exception as e:
-            print(f"Attempt {attempt_counter} failed with error: {str(e)}. Retrying...")
+            return jsonify(error=f"Error reading haul.json: {str(e)}"), 500
 
-    if attempt_counter == max_attempts:
-        return "Failed to generate a valid recipe after multiple attempts.", 500
+        # Construct the prompt for the OpenAI API
+        prompt_parts = [
+            "We are creating a recipe. The output should be in JSON format with specific sections with no additional comments.",
+            "The JSON structure should include 'title', 'serving_size', 'ingredients', and 'instructions' in that order.",
+            "Start with a 'title' section, followed by 'serving_size'. Then, 'serving_size' should be 4.",
+            "Each ingredient must have a measurement indicating how much to use of that ingredient.",
+            (
+                "Finally, provide 'instructions' as an ordered list. You do not have to use all the ingredients in the following list. "
+                "The 'instructions' section needs to include the minutes it will take to cook each ingredient in plain sentence format. "
+                "Only use what you need for the recipe. If the following list does not include an ingredient, do NOT include it. "
+                f"Here is the list of ingredients to choose from: {', '.join(ingredients_list)}"
+            ),
+            "Please format the ingredients as a JSON object.",
+            f"The food I want to make is: {user_input}"
+        ]
+        final_prompt = " ".join(prompt_parts)
+        
+        max_attempts = 15
+        attempt_counter = 0
+        response_file_path = os.path.join(app.root_path, 'response', 'out.json')
 
-    # Read the generated text from the JSON file
-    with open(response_file_path, 'r') as outfile:
-        response_data = json.load(outfile)
-        generated_text = response_data.get('generated_text', '')
+        while attempt_counter < max_attempts:
+            attempt_counter += 1
+            try:
+                # Create an OpenAI client instance
+                client = OpenAI(api_key=api_key)
 
-    # Parse the generated JSON and flatten the ingredients
-    recipe_data = json.loads(generated_text)
-    recipe_data['ingredients'] = flatten_ingredients(recipe_data['ingredients'])
+                # Generate a chat completion
+                response = client.chat.completions.create(
+                    messages=[{"role": "user", "content": final_prompt}],
+                    model="gpt-3.5-turbo"
+                )
 
-    # Log the number of attempts
-    with open('attempt_log.txt', 'w') as log_file:
-        log_file.write(f"Number of attempts: {attempt_counter}")
+                # Extract the generated text
+                generated_text = response.choices[0].message.content
 
-    # Print the number of attempts to the console
-    print(f"++++++++++++++++++++++++++++++++++++++++++++")
-    print(f"+    Number of attempts: {attempt_counter}                 +")
-    print(f"++++++++++++++++++++++++++++++++++++++++++++")
+                # Check and create the 'response' directory if it does not exist
+                directory = os.path.join(app.root_path, 'response')
+                if not os.path.exists(directory):
+                    os.makedirs(directory)
 
-    # Return the generated text to the client by rendering a template
-    return render_template('generate — CookAI.html', recipe=recipe_data)
+                # Save the generated text to a JSON file in the 'response' folder
+                with open(response_file_path, 'w') as outfile:
+                    json.dump({'generated_text': generated_text}, outfile)
+
+                # Validate the JSON file
+                if validate_json(response_file_path):
+                    break  # Exit the loop if the JSON is valid
+                else:
+                    print(f"Attempt {attempt_counter} failed. Invalid JSON format. Retrying...")
+
+            except Exception as e:
+                print(f"Attempt {attempt_counter} failed with error: {str(e)}. Retrying...")
+
+        if attempt_counter == max_attempts:
+            return jsonify(error="Failed to generate a valid recipe after multiple attempts."), 500
+
+        # Read the generated text from the JSON file
+        with open(response_file_path, 'r') as outfile:
+            response_data = json.load(outfile)
+            generated_text = response_data.get('generated_text', '')
+
+        # Parse the generated JSON and flatten the ingredients
+        recipe_data = json.loads(generated_text)
+        recipe_data['ingredients'] = flatten_ingredients(recipe_data['ingredients'])
+
+        # Log the number of attempts
+        with open('attempt_log.txt', 'w') as log_file:
+            log_file.write(f"Number of attempts: {attempt_counter}")
+
+        # Print the number of attempts to the console
+        print(f"++++++++++++++++++++++++++++++++++++++++++++")
+        print(f"+    Number of attempts: {attempt_counter}                 +")
+        print(f"++++++++++++++++++++++++++++++++++++++++++++")
+
+        # Return the generated text to the client by rendering a template
+        return jsonify(recipe=recipe_data)
+
+    if request.method == 'GET':
+        response_file_path = os.path.join(app.root_path, 'response', 'out.json')
+        if os.path.exists(response_file_path):
+            with open(response_file_path, 'r') as outfile:
+                response_data = json.load(outfile)
+                generated_text = response_data.get('generated_text', '')
+                recipe_data = json.loads(generated_text)
+                return render_template('generate — CookAI.html', recipe=recipe_data)
+        else:
+            return "No recipe found. Please generate a recipe first.", 400
 
 @app.route('/upload-haul', methods=['POST'])
 def upload_haul():
