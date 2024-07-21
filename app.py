@@ -8,8 +8,6 @@ import requests
 
 app = Flask(__name__)
 
-food_list_file = os.path.join(app.root_path, 'haul', 'haul.json')
-
 @app.route('/response/<filename>')
 def response(filename):
     return send_from_directory('response', filename)
@@ -49,9 +47,6 @@ def flatten_ingredients(ingredients):
             flattened[key] = value
     return flattened
 
-def remove_duplicates(ingredients):
-    return list(set(ingredients))
-
 @app.route('/generate', methods=['POST'])
 def generate():
     api_key = request.form['api_key']
@@ -63,8 +58,11 @@ def generate():
     if not user_input:
         return "User input is required", 400
         
-    # Read the ingredients list from haul.json
+    # Check if the haul.json file exists
     haul_filepath = os.path.join(app.root_path, 'haul', 'haul.json')
+    if not os.path.exists(haul_filepath):
+        return "No ingredients found. Please add items to your fridge first.", 400
+
     try:
         with open(haul_filepath, 'r') as file:
             ingredients_list = json.load(file)
@@ -184,7 +182,7 @@ def upload_haul():
                 {
                     "role": "user",
                     "content": [
-                        {"type": "text", "text": "Put a name to all of these ingredients in a JSON formatted list with no extra jargon. Include the label 'ingredients'"},
+                        {"type": "text", "text": "Put a name to all of these ingredients in a JSON formatted list with not extra jargon. Include the label 'ingredients'"},
                         {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}}
                     ]
                 }
@@ -210,19 +208,9 @@ def upload_haul():
             if json_data.strip():  # Check if json_data is not empty
                 json_filepath = os.path.join(directory, 'haul.json')
                 try:
-                    with open(json_filepath, 'r') as file:
-                        existing_data = json.load(file)
-                        existing_data['ingredients'].extend(json.loads(json_data)['ingredients'])
-                        existing_data['ingredients'] = remove_duplicates(existing_data['ingredients'])
                     with open(json_filepath, 'w') as json_file:
-                        json.dump(existing_data, json_file, indent=2)
-                    return jsonify(existing_data)
-                except FileNotFoundError:
-                    with open(json_filepath, 'w') as json_file:
-                        data_to_save = json.loads(json_data)
-                        data_to_save['ingredients'] = remove_duplicates(data_to_save['ingredients'])
-                        json.dump(data_to_save, json_file, indent=2)
-                    return jsonify(data_to_save)
+                        json.dump(json.loads(json_data), json_file, indent=2)
+                    return jsonify(json.loads(json_data))
                 except Exception as e:
                     return f"Failed to save JSON: {str(e)}", 500
             else:
@@ -231,7 +219,7 @@ def upload_haul():
             return f"OpenAI API request failed: {response.text}", 500
 
     return "File upload failed", 500
-
+    
 @app.route('/generate-recipes', methods=['POST'])
 def generate_recipes():
     try:
@@ -239,8 +227,11 @@ def generate_recipes():
         if not api_key:
             return jsonify(error="API key is required"), 400
 
-        # Read the ingredients list from haul.json
+        # Check if the haul.json file exists
         haul_filepath = os.path.join(app.root_path, 'haul', 'haul.json')
+        if not os.path.exists(haul_filepath):
+            return jsonify(error="No ingredients found. Please add items to your fridge first."), 400
+
         try:
             with open(haul_filepath, 'r') as file:
                 ingredients_data = json.load(file)
@@ -256,8 +247,8 @@ def generate_recipes():
 
         # Construct the prompt for the OpenAI API
         prompt_parts = [
-            f"Generate 5 different meals I can make with this set of food: {', '.join(ingredients_list)}.",
-            "Please format the recipes as a JSON array and list each recipe containing 'title', 'serving_size', 'ingredients', and 'instructions'."
+            f"Generate 10 different meals I can make with this set of food: {', '.join(ingredients_list)}.",
+            "Please format the recipes as a JSON array with each recipe containing 'meal', 'serving_size', 'ingredients', and 'instructions'."
         ]
         final_prompt = " ".join(prompt_parts)
 
@@ -297,12 +288,15 @@ def generate_recipes():
 
     except Exception as e:
         return jsonify(error=f"Failed to generate recipes: {str(e)}"), 500
-
+        
 # Route to get the current food list
 @app.route('/get-food-list', methods=['GET'])
 def get_food_list():
     try:
-        with open(food_list_file, 'r') as file:
+        haul_filepath = os.path.join(app.root_path, 'haul', 'haul.json')
+        if not os.path.exists(haul_filepath):
+            return jsonify({"ingredients": []}), 200
+        with open(haul_filepath, 'r') as file:
             data = json.load(file)
         return jsonify(data)
     except Exception as e:
@@ -359,17 +353,18 @@ def add_food():
         with open(food_list_file, 'r') as file:
             food_data = json.load(file)
 
-        if new_food not in food_data['ingredients']:
-            food_data['ingredients'].append(new_food)
-            with open(food_list_file, 'w') as file:
-                json.dump(food_data, file, indent=2)
-            return jsonify({"message": "Food added successfully!"})
-        else:
-            return jsonify({"message": "Food already exists!"})
+        # Check for duplicates
+        if new_food in food_data['ingredients']:
+            return jsonify({"error": "Food item already exists"}), 400
+
+        food_data['ingredients'].append(new_food)
+        with open(food_list_file, 'w') as file:
+            json.dump(food_data, file, indent=2)
+        return jsonify({"message": "Food added successfully!"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# Route to clear the entire food list
+# Route to clear the food list
 @app.route('/clear-food-list', methods=['POST'])
 def clear_food_list():
     try:
@@ -378,6 +373,14 @@ def clear_food_list():
         return jsonify({"message": "All food items cleared successfully!"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route('/check-haul', methods=['GET'])
+def check_haul():
+    if os.path.exists(food_list_file):
+        return jsonify({"exists": True})
+    else:
+        return jsonify({"exists": False})
+
 
 if __name__ == '__main__':
     app.run(debug=True)
