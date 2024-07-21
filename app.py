@@ -345,23 +345,30 @@ def delete_food():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# Route to add a new food item
 @app.route('/add-food', methods=['POST'])
 def add_food():
     try:
         data = request.json
         new_food = data['newFood']
 
-        with open(food_list_file, 'r') as file:
-            food_data = json.load(file)
+        # Ensure the directory exists
+        os.makedirs(os.path.dirname(food_list_file), exist_ok=True)
 
-        # Check for duplicates
+        # Check if the file exists and create it if not
+        if not os.path.exists(food_list_file):
+            food_data = {'ingredients': []}
+        else:
+            with open(food_list_file, 'r') as file:
+                food_data = json.load(file)
+
+        # Check for duplicates before adding
         if new_food in food_data['ingredients']:
             return jsonify({"error": "Food item already exists"}), 400
 
         food_data['ingredients'].append(new_food)
         with open(food_list_file, 'w') as file:
             json.dump(food_data, file, indent=2)
+        
         return jsonify({"message": "Food added successfully!"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -370,8 +377,14 @@ def add_food():
 @app.route('/clear-food-list', methods=['POST'])
 def clear_food_list():
     try:
+        # Ensure the directory exists
+        os.makedirs(os.path.dirname(food_list_file), exist_ok=True)
+
+        # Clear the food list by overwriting with an empty list
+        food_data = {'ingredients': []}
         with open(food_list_file, 'w') as file:
-            json.dump({"ingredients": []}, file, indent=2)
+            json.dump(food_data, file, indent=2)
+
         return jsonify({"message": "All food items cleared successfully!"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
