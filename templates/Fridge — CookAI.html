@@ -2214,38 +2214,49 @@
             });
         });
 
-        // Handle recipe generation
-        $('#generate-recipes-form').submit(function(event) {
-            event.preventDefault(); // Prevent the form from submitting the traditional way
+		// Handle recipe generation
+		$('#generate-recipes-form').submit(function(event) {
+			event.preventDefault(); // Prevent the form from submitting the traditional way
 
-            const apiKey = $('#api_key_recipes').val();
+			const apiKey = $('#api_key_recipes').val();
 
-            // Show the loading overlay
-            $('#loading-overlay').show();
+			// Show the loading overlay
+			$('#loading-overlay').show();
 
-            $.ajax({
-                url: '/generate-recipes',
-                method: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify({ api_key_recipes: apiKey }),
-                success: function(response) {
-                    let recipesHtml = '<h2>Generated Recipes:</h2><ul>';
-                    response.recipes.forEach(recipe => {
-                        recipesHtml += `<li><strong>${recipe.title}</strong>: ${recipe.ingredients.join(', ')}</li>`;
-                    });
-                    recipesHtml += '</ul>';
-                    $('#recipes-container').html(recipesHtml);
-                    showNotification('Recipes generated successfully!');
-                },
-                error: function(xhr) {
-                    showNotification(`Failed to generate recipes: ${xhr.responseJSON.error}`, true);
-                },
-                complete: function() {
-                    // Hide the loading overlay
-                    $('#loading-overlay').hide();
-                }
-            });
-        });
+			$.ajax({
+				url: '/generate-recipes',
+				method: 'POST',
+				contentType: 'application/json',
+				data: JSON.stringify({ api_key_recipes: apiKey }),
+				success: function(response) {
+					let recipesHtml = '<h2>Generated Recipes:</h2>';
+					response.recipes.forEach(recipe => {
+						recipesHtml += `<div><strong>${recipe.title}</strong> (${recipe.serving_size})</div>`;
+						recipesHtml += `<ul>`;
+						recipe.ingredients.forEach(ingredient => {
+							recipesHtml += `<li>${ingredient}</li>`;
+						});
+						recipesHtml += `</ul>`;
+						recipesHtml += `<div><strong>Instructions:</strong></div>`;
+						recipesHtml += `<ol>`;
+						recipe.instructions.forEach(instruction => {
+							recipesHtml += `<li>${instruction}</li>`;
+						});
+						recipesHtml += `</ol>`;
+						recipesHtml += `<hr>`;
+					});
+					$('#recipes-container').html(recipesHtml);
+					showNotification('Recipes generated successfully!');
+				},
+				error: function(xhr) {
+					showNotification(`Failed to generate recipes: ${xhr.responseJSON.error}`, true);
+				},
+				complete: function() {
+					// Hide the loading overlay
+					$('#loading-overlay').hide();
+				}
+			});
+		});
 
 		// Load the current food list from the server
 		function loadFoodList() {

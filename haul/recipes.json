@@ -1,90 +1,93 @@
 [
   {
-    "title": "Banana Bread",
-    "serving_size": 4,
-    "ingredients": {
-      "bananas": "3 ripe",
-      "eggs": "2",
-      "sugar": "1 cup",
-      "flour": "2 cups",
-      "milk": "1/4 cup",
-      "baking_spices": "1 tsp cinnamon",
-      "sea_salt": "1/2 tsp"
-    },
+    "title": "Cheesy Beef and Asparagus Skillet",
+    "serving_size": 2,
+    "ingredients": [
+      "1 lb beef, ground",
+      "1 bunch asparagus, trimmed and cut into 2-inch pieces",
+      "1 cup sharp cheddar cheese, grated",
+      "1 tablespoon jalapeno seasoning",
+      "2 tablespoons sour cream",
+      "Salt and pepper to taste"
+    ],
     "instructions": [
-      "Preheat the oven to 350\u00b0F (175\u00b0C).",
-      "In a bowl, mash the 3 ripe bananas (about 5 minutes).",
-      "Add 2 eggs and whisk together until well combined (2 minutes).",
-      "Stir in 1 cup of sugar, 1/4 cup of milk, and 1 tsp of cinnamon until mixed (2 minutes).",
-      "Gradually mix in 2 cups of flour and 1/2 tsp of sea salt until the batter forms (3 minutes).",
-      "Pour the mixture into a greased loaf pan and bake for 60 minutes or until a toothpick comes out clean."
+      "In a large skillet over medium-high heat, add the ground beef and cook until browned.",
+      "Add the asparagus to the skillet and stir-fry until tender-crisp, about 3-4 minutes.",
+      "Sprinkle the jalapeno seasoning, salt, and pepper over the beef and asparagus.",
+      "Remove from heat and stir in the sour cream until well combined.",
+      "Serve topped with shredded sharp cheddar cheese."
     ]
   },
   {
-    "title": "Beef Stir-Fry with Vegetables",
-    "serving_size": 4,
-    "ingredients": {
-      "beef": "1 lb sliced",
-      "cucumbers": "2",
-      "tomatoes": "2",
-      "spices": "to taste",
-      "sea_salt": "1 tsp"
-    },
+    "title": "Salami and Mushroom Quesadilla",
+    "serving_size": 2,
+    "ingredients": [
+      "4 Italian dry salami slices",
+      "1 cup mushrooms, sliced",
+      "1 cup sharp cheddar cheese, grated",
+      "2 flour tortillas",
+      "Sour cream for serving"
+    ],
     "instructions": [
-      "Slice 1 lb of beef thinly (5 minutes).",
-      "Chop 2 cucumbers and 2 tomatoes into bite-sized pieces (5 minutes).",
-      "Heat a skillet over medium-high heat and add the beef to cook for about 7-10 minutes until browned.",
-      "Add the chopped cucumbers and tomatoes, season with spices and sea salt, and stir-fry for an additional 5-7 minutes until vegetables are tender."
+      "In a skillet, saut\u00e9 the sliced mushrooms over medium heat until soft.",
+      "Place one tortilla in the skillet and layer with salami, saut\u00e9ed mushrooms, and cheese.",
+      "Top with the second tortilla and cook until the bottom is golden brown.",
+      "Flip and cook until the other side is golden brown and the cheese melts.",
+      "Cut into wedges and serve with sour cream on the side."
     ]
   },
   {
-    "title": "Pasta with Tomato Sauce",
-    "serving_size": 4,
-    "ingredients": {
-      "pasta": "8 oz",
-      "canned_tomatoes": "1 can (14.5 oz)",
-      "spices": "to taste",
-      "sea_salt": "1 tsp"
-    },
+    "title": "Strawberry Ice Cream Float",
+    "serving_size": 2,
+    "ingredients": [
+      "1 cup strawberries, sliced",
+      "1 cup ice cream",
+      "1 can z soda or sparkling ice"
+    ],
     "instructions": [
-      "Bring a pot of salted water to boil and cook 8 oz of pasta according to package instructions (10-12 minutes).",
-      "While the pasta is cooking, pour 1 can of canned tomatoes into a saucepan over medium heat (2 minutes).",
-      "Season with spices and 1 tsp of sea salt and simmer for about 5-10 minutes.",
-      "Drain the pasta and mix with the sauce before serving."
+      "Place sliced strawberries in a glass.",
+      "Add a scoop of ice cream on top.",
+      "Slowly pour the z soda or sparkling ice over the ice cream until the glass is full.",
+      "Enjoy with a spoon and straw!"
     ]
   },
   {
-    "title": "Carrot and Yogurt Salad",
-    "serving_size": 4,
-    "ingredients": {
-      "carrots": "4 large",
-      "yogurt": "1 cup",
-      "spices": "to taste",
-      "sea_salt": "1/2 tsp"
-    },
+    "title": "Almond Milk Mushroom Soup",
+    "serving_size": 2,
+    "ingredients": [
+      "1 cup mushrooms, sliced",
+      "2 cups almond milk",
+      "1 tablespoon liquid aminos",
+      "Salt and pepper to taste",
+      "Jalapeno seasoning to taste"
+    ],
     "instructions": [
-      "Grate 4 large carrots (5 minutes).",
-      "In a bowl, mix the grated carrots with 1 cup of yogurt (2 minutes).",
-      "Season with spices and 1/2 tsp of sea salt, stirring until well combined (2 minutes).",
-      "Chill in the refrigerator for 15 minutes before serving."
+      "In a pot, saut\u00e9 the mushrooms over medium heat until browned.",
+      "Add the almond milk and bring to a simmer.",
+      "Stir in the liquid aminos, jalapeno seasoning, salt, and pepper.",
+      "Simmer for about 10 minutes to allow flavors to meld.",
+      "Blend until smooth, if desired, and serve warm."
     ]
   },
   {
-    "title": "Chocolate Banana Cake",
+    "title": "Spicy Beef and Cheese Stuffed Mushrooms",
     "serving_size": 4,
-    "ingredients": {
-      "cake_mix": "1 box",
-      "bananas": "2 ripe",
-      "eggs": "2",
-      "milk": "1 cup",
-      "chocolate_syrup": "1/2 cup"
-    },
+    "ingredients": [
+      "12 large mushrooms, stems removed",
+      "1 lb beef, ground",
+      "1 cup sharp cheddar cheese, grated",
+      "1 tablespoon jalapeno seasoning",
+      "2 tablespoons sour cream",
+      "Salt and pepper to taste"
+    ],
     "instructions": [
-      "Preheat the oven to 350\u00b0F (175\u00b0C).",
-      "In a mixing bowl, mash 2 ripe bananas (3 minutes).",
-      "Add 2 eggs, 1 cup of milk, and 1/2 cup of chocolate syrup, mixing well (4 minutes).",
-      "Gradually add the cake mix and combine until smooth (3 minutes).",
-      "Pour the batter into a greased cake pan and bake for 30 minutes or until a toothpick comes out clean."
+      "Preheat oven to 375\u00b0F (190\u00b0C).",
+      "In a skillet, brown the ground beef and drain excess fat.",
+      "Stir in the jalapeno seasoning, salt, and pepper.",
+      "Remove from heat and mix in the sour cream and half of the cheddar cheese.",
+      "Stuff each mushroom cap with the beef and cheese mixture.",
+      "Place on a baking sheet and top with remaining cheese.",
+      "Bake for 15-20 minutes, or until mushrooms are tender and cheese is melted."
     ]
   }
 ]

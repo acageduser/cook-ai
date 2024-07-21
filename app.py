@@ -256,8 +256,8 @@ def generate_recipes():
 
         # Construct the prompt for the OpenAI API
         prompt_parts = [
-            f"Generate 10 different meals I can make with this set of food: {', '.join(ingredients_list)}.",
-            "Please format the recipes as a JSON array with each recipe containing 'title', 'serving_size', 'ingredients', and 'instructions'."
+            f"Generate 5 different meals I can make with this set of food: {', '.join(ingredients_list)}.",
+            "Please format the recipes as a JSON array and list each recipe containing 'title', 'serving_size', 'ingredients', and 'instructions'."
         ]
         final_prompt = " ".join(prompt_parts)
 
