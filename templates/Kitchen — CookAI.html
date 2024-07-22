@@ -39,73 +39,75 @@
   <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/Kitchen — CookAI_files/static.css') }}">
   <link rel="stylesheet" type="text/css" href=".//static/css/Kitchen — CookAI_files/dc3ececddc5363a3dc01-min.en-US.css"><style id="forms-grecaptcha-badge-style">.grecaptcha-badge { visibility: hidden; }</style>
 <!-- Styles for Loading Overlay and Notification Banner -->
-<!-- Styles for Loading Overlay and Notification Banner -->
 	<style>
-		#loading-overlay {
-			position: fixed;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background: rgba(0, 0, 0, 0.5);
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			z-index: 9999;
-		}
-		.spinner {
-			border: 30px solid #f3f3f3; /* Light grey */
-			border-top: 16px solid #3F5A36; /* Forest green */
-			border-radius: 50%;
-			width: 120px;
-			height: 120px;
-			animation: spin 1.5s linear infinite;
-		}
-		@keyframes spin {
-			0% { transform: rotate(0deg); }
-			100% { transform: rotate(360deg); }
-		}
-		#loading-overlay {
-			position: fixed;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background: rgba(0, 0, 0, 0.5);
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			z-index: 9998;
-		}
-		.spinner {
-			border: 30px solid #f3f3f3; /* Light grey */
-			border-top: 16px solid #3F5A36; /* Forest green */
-			border-radius: 50%;
-			width: 120px;
-			height: 120px;
-			animation: spin 1.5s linear infinite;
-		}
-		@keyframes spin {
-			0% { transform: rotate(0deg); }
-			100% { transform: rotate(360deg); }
-		}
-		#notification-banner {
-			position: fixed;
-			bottom: 0;
-			left: 0;
-			width: 100%;
-			background: #28a745;
-			color: white;
-			text-align: center;
-			padding: 10px;
-			font-size: 16px;
-			z-index: 9999;
-			display: none;
-		}
-		#notification-banner.error {
-			background: #dc3545;
-		}
-	</style>
+        #loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9998;
+        }
+        .spinner {
+            border: 30px solid #f3f3f3; /* Light grey */
+            border-top: 16px solid #3F5A36; /* Forest green */
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 1.5s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        #notification-banner {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #28a745;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            font-size: 16px;
+            z-index: 9999;
+            display: none;
+        }
+        #notification-banner.error {
+            background: #dc3545;
+        }
+
+        /* New styles for side-by-side forms */
+        .form-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .form-wrapper2 {
+            flex: 1;
+            min-width: 300px;
+            max-width: 45%;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .form-item {
+            margin-bottom: 15px;
+        }
+        .form-button-wrapper {
+            text-align: center;
+        }
+        #recipes-container {
+            margin-top: 20px;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
   </head>
   <link rel="stylesheet" type="text/css" href="./static/css/Kitchen — CookAI_files/site.css">
@@ -1437,108 +1439,193 @@
 
 
 
+    <!-- Notification Banner -->
+    <div id="notification-banner" style="display: none;">This is a notification</div>
 
-	<!-- Notification Banner -->
-	<div id="notification-banner" style="display: none;">This is a notification</div>
+    <!-- Container for side-by-side forms -->
+    <div class="form-container">
+        <!-- Form for generating content -->
+        <div class="form-wrapper2">
+            <div>
+				<p style="text-align: center;color:white;background-color:Tomato;">Beta</p>
+				<p><b>Get a Recipe for a Specific Dish</b></p>
+                <p>Type exactly what you want to make! Suggests ingredients outside of just your fridge so you know what to buy on your next grocery haul!</p>
+            </div>
+            <form id="generate-form" class="react-form-contents" novalidate>
+                <div class="field-list">
+                    <div class="form-item field text required" id="text-84b78972-5ef2-4345-8df9-7b45875a6cdd" data-dynamic-strings="">
+                        <label for="text-84b78972-5ef2-4345-8df9-7b45875a6cdd-field" class="title">Get a recipe for:</label>
+                        <input type="text" name="user_input" class="form-control" id="text-84b78972-5ef2-4345-8df9-7b45875a6cdd-field" placeholder="Quesadilla" required>
+                    </div>
+                    <div class="form-item field text required" id="text-df32c1d7-2d26-4cf1-b6b8-d5d238621b19">
+                        <label for="text-df32c1d7-2d26-4cf1-b6b8-d5d238621b19-field" class="title">API Key:</label>
+                        <input type="text" name="api_key" class="form-control" id="text-df32c1d7-2d26-4cf1-b6b8-d5d238621b19-field" placeholder="Add your OpenAI API Key" required>
+                    </div>
+                </div>
+                <div class="form-button-wrapper" style="width: 100%; margin-top: 20px;">
+                    <button type="submit" class="button sqs-system-button sqs-editable-button form-submit-button sqs-button-element--primary" style="width: 100%;">Generate</button>
+                </div>
+            </form>
+        </div>
 
-	<!-- Form for generating content -->
-	<form id="generate-form" class="react-form-contents" novalidate>
-	  <div class="field-list">
-		<div class="form-item field text required" id="text-84b78972-5ef2-4345-8df9-7b45875a6cdd" data-dynamic-strings="">
-		  <label for="text-84b78972-5ef2-4345-8df9-7b45875a6cdd-field" class="title">Get a recipe for:</label>
-		  <input type="text" name="user_input" class="form-control" id="text-84b78972-5ef2-4345-8df9-7b45875a6cdd-field" placeholder="Quesadilla" required>
-		</div>
-		<div class="form-item field text required" id="text-df32c1d7-2d26-4cf1-b6b8-d5d238621b19">
-		  <label for="text-df32c1d7-2d26-4cf1-b6b8-d5d238621b19-field" class="title">OpenAI API Key:</label>
-		  <input type="text" name="api_key" class="form-control" id="text-df32c1d7-2d26-4cf1-b6b8-d5d238621b19-field" placeholder="Add your OpenAI API Key" required>
-		</div>
-	  </div>
-	  <div class="form-button-wrapper" style="width: 100%; margin-top: 20px;">
-		<button type="submit" class="button sqs-system-button sqs-editable-button form-submit-button sqs-button-element--primary" style="width: 100%;">Generate</button>
-	  </div>
-	</form>
+        <!-- Form for generating recipes from the fridge -->
+        <div class="form-wrapper2">
+            <div>
+				<p style="text-align: center;color:white;background-color:DodgerBlue;">Recommended</p>
+				<p><b>Generate Recipes from Your Fridge</b></p>
+                <p>Don't know what to make but you have a lot in your fridge?</p>
+				<p>Get 10 random and fresh recipe ideas directly from your fridge!</p>
+            </div>
+            <form id="generate-recipes-form" class="react-form-contents" novalidate>
+                <div class="field-list">
+                    <div class="form-item field text required" id="text-generate-api-key" data-dynamic-strings="">
+						<p></p>
+                        <label for="api_key_recipes" class="title">API Key:</label>
+                        <input type="text" name="api_key_recipes" class="form-control" id="api_key_recipes" placeholder="Add your OpenAI API Key" required>
+                    </div>
+                </div>
+                <div class="form-button-wrapper" style="width: 100%; margin-top: 20px;">
+                    <button type="submit" class="button sqs-system-button sqs-editable-button form-submit-button sqs-button-element--primary" style="width: 100%;">Generate Recipe Ideas</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
-	<!-- Loading Overlay -->
-	<div id="loading-overlay" style="display:none;">
-	  <div class="spinner"></div>
-	</div>
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" style="display:none;">
+        <div class="spinner"></div>
+    </div>
 
-	<!-- JavaScript for handling the form submission and showing the overlay -->
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const form = document.getElementById("generate-form");
+    <div id="recipes-container"></div>
 
-        form.addEventListener("submit", function(event) {
-            event.preventDefault(); // Prevent the form from submitting the traditional way
+    <!-- JavaScript for handling the form submission and showing the overlay -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const form = document.getElementById("generate-form");
 
-            const user_input = document.querySelector("input[name='user_input']").value;
-            const api_key = document.querySelector("input[name='api_key']").value;
+            form.addEventListener("submit", function(event) {
+                event.preventDefault(); // Prevent the form from submitting the traditional way
 
-            // Show the loading overlay
-            document.getElementById("loading-overlay").style.display = "flex";
+                const user_input = document.querySelector("input[name='user_input']").value;
+                const api_key = document.querySelector("input[name='api_key']").value;
 
-            // Make an AJAX request to check if haul.json exists
-            fetch('/check-haul')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.exists) {
-                        // If the file exists, submit the form data to the generate endpoint
-                        fetch('/generate', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({ user_input: user_input, api_key: api_key }),
-                        })
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Network response was not ok');
-                            }
-                            return response.json();
-                        })
-                        .then(result => {
-                            if (result.error) {
-                                throw new Error(result.error);
-                            }
-                            // Handle the result of the generate endpoint
-                            console.log("Recipe generated successfully");
+                // Show the loading overlay
+                document.getElementById("loading-overlay").style.display = "flex";
+
+                // Make an AJAX request to check if haul.json exists
+                fetch('/check-haul')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.exists) {
+                            // If the file exists, submit the form data to the generate endpoint
+                            fetch('/generate', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify({ user_input: user_input, api_key: api_key }),
+                            })
+                            .then(response => {
+                                if (!response.ok) {
+                                    throw new Error('Network response was not ok');
+                                }
+                                return response.json();
+                            })
+                            .then(result => {
+                                if (result.error) {
+                                    throw new Error(result.error);
+                                }
+                                // Handle the result of the generate endpoint
+                                console.log("Recipe generated successfully");
+                                document.getElementById("loading-overlay").style.display = "none";
+                                window.location.href = '/generate'; // Redirect to the generate page
+                            })
+                            .catch(error => {
+                                console.error('Error generating recipe:', error);
+                                showNotification('Failed to generate recipe.', true);
+                                document.getElementById("loading-overlay").style.display = "none";
+                            });
+                        } else {
+                            // If the file does not exist, show a notification and hide the loading overlay
+                            showNotification('No ingredients found. Please add items to your fridge first.', true);
                             document.getElementById("loading-overlay").style.display = "none";
-                            window.location.href = '/generate'; // Redirect to the generate page
-                        })
-                        .catch(error => {
-                            console.error('Error generating recipe:', error);
-                            showNotification('Failed to generate recipe.', true);
-                            document.getElementById("loading-overlay").style.display = "none";
-                        });
-                    } else {
-                        // If the file does not exist, show a notification and hide the loading overlay
-                        showNotification('No ingredients found. Please add items to your fridge first.', true);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error checking haul.json:', error);
+                        showNotification('There is nothing in your fridge! Add items to your fridge first!', true);
                         document.getElementById("loading-overlay").style.display = "none";
-                    }
-                })
-                .catch(error => {
-                    console.error('Error checking haul.json:', error);
-                    showNotification('There is nothing in your fridge! Add items to your fridge first!', true);
-                    document.getElementById("loading-overlay").style.display = "none";
-                });
-        });
+                    });
+            });
 
-        // Function to show notification banner
-        function showNotification(message, isError = false) {
-            const banner = document.getElementById("notification-banner");
-            banner.textContent = message;
-            if (isError) {
-                banner.classList.add("error");
-            } else {
-                banner.classList.remove("error");
+            // Function to show notification banner
+            function showNotification(message, isError = false) {
+                const banner = document.getElementById("notification-banner");
+                banner.textContent = message;
+                if (isError) {
+                    banner.classList.add("error");
+                } else {
+                    banner.classList.remove("error");
+                }
+                banner.style.display = "block";
+                setTimeout(() => {
+                    banner.style.display = "none";
+                }, 2000);
             }
-            banner.style.display = "block";
-            setTimeout(() => {
-                banner.style.display = "none";
-            }, 2000);
-        }
-    });
-</script>
+
+            // Handle recipe generation from fridge
+            $('#generate-recipes-form').submit(function(event) {
+                event.preventDefault(); // Prevent the form from submitting the traditional way
+
+                const apiKey = $('#api_key_recipes').val();
+
+                // Show the loading overlay
+                $('#loading-overlay').show();
+
+                $.ajax({
+                    url: '/generate-recipes',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ api_key_recipes: apiKey }),
+                    success: function(response) {
+                        console.log(response); // Debugging line to check the response structure
+                        let recipesHtml = '<h2>Generated Recipes:</h2>';
+                        response.recipes.forEach(recipe => {
+                            recipesHtml += `<div><strong>${recipe.meal}</strong> (Serving size: ${recipe.serving_size})</div>`;
+                            recipesHtml += `<ul>`;
+                            recipe.ingredients.forEach(ingredient => {
+                                recipesHtml += `<li>${ingredient}</li>`;
+                            });
+                            recipesHtml += `</ul>`;
+                            recipesHtml += `<div><strong>Instructions:</strong></div>`;
+                            recipesHtml += `<ol>`;
+                            recipe.instructions.forEach(instruction => {
+                                recipesHtml += `<li>${instruction}</li>`;
+                            });
+                            recipesHtml += `</ol>`;
+                            recipesHtml += `<hr>`;
+                        });
+                        $('#recipes-container').html(recipesHtml);
+                        showNotification('Recipes generated successfully!');
+                    },
+                    error: function(xhr) {
+                        let errorMessage = 'An error occurred while generating recipes';
+                        try {
+                            const responseJSON = JSON.parse(xhr.responseText);
+                            errorMessage = responseJSON.error;
+                        } catch (e) {
+                            errorMessage = 'An unexpected error occurred';
+                        }
+                        showNotification(`Failed to generate recipes: ${errorMessage}`, true);
+                    },
+                    complete: function() {
+                        // Hide the loading overlay
+                        $('#loading-overlay').hide();
+                    }
+                });
+            });
+        });
+    </script>
 
 
   <!-- JavaScript for handling the form submission and showing the overlay -->
