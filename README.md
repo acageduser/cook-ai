@@ -27,7 +27,7 @@ cd cook-ai
 To start the application on Windows, run the provided batch file:
 
 ```
-start_local-windows.bat
+start_local-windows_setup_and_server.bat
 ```
 
 #### macOS and Linux
@@ -38,7 +38,7 @@ To start the application on macOS or Linux, run the provided shell script:
 ```
 
 ## Accessing the Application
-Open ```start_local-windows.bat``` (Windows) or ```start_local-mac.sh``` (mac/Linux). This is the local server. Once the local server is running, open your web browser and navigate to:
+Open ```start_local-windows_setup_and_server.bat``` (Windows) or ```start_local-mac.sh``` (mac/Linux). This is the local server. Once the local server is running, open your web browser and navigate to:
 
 [```http://127.0.0.1:5000```](http://127.0.0.1:5000)
 This will bring up the CookAI interface where you can generate recipes based on the ingredients you have.
