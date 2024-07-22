@@ -105,7 +105,7 @@ def generate():
                 # Generate a chat completion
                 response = client.chat.completions.create(
                     messages=[{"role": "user", "content": final_prompt}],
-                    model="gpt-3.5-turbo"
+                    model="gpt-4o-mini"
                 )
 
                 # Extract the generated text
@@ -197,7 +197,7 @@ def upload_haul():
                 {
                     "role": "user",
                     "content": [
-                        {"type": "text", "text": "Put a name to all of these ingredients in a JSON formatted list with not extra jargon. Include the label 'ingredients'"},
+                        {"type": "text", "text": "Put a name to all of these ingredients in a JSON formatted list with no extra jargon. Include the label 'ingredients'"},
                         {"type": "image_url", "image_url": {"url": f"data:image/jpeg;base64,{base64_image}"}}
                     ]
                 }
@@ -222,12 +222,27 @@ def upload_haul():
             
             if json_data.strip():  # Check if json_data is not empty
                 json_filepath = os.path.join(directory, 'haul.json')
-                try:
-                    with open(json_filepath, 'w') as json_file:
-                        json.dump(json.loads(json_data), json_file, indent=2)
-                    return jsonify(json.loads(json_data))
-                except Exception as e:
-                    return f"Failed to save JSON: {str(e)}", 500
+                new_ingredients = json.loads(json_data).get('ingredients', [])
+
+                # Append to the existing haul.json file
+                if os.path.exists(json_filepath):
+                    with open(json_filepath, 'r') as json_file:
+                        existing_data = json.load(json_file)
+                    existing_ingredients = existing_data.get('ingredients', [])
+                else:
+                    existing_ingredients = []
+
+                # Append new ingredients to existing ones
+                combined_ingredients = existing_ingredients + new_ingredients
+
+                # Remove duplicates while preserving order
+                seen = set()
+                combined_ingredients = [item for item in combined_ingredients if not (item in seen or seen.add(item))]
+
+                with open(json_filepath, 'w') as json_file:
+                    json.dump({'ingredients': combined_ingredients}, json_file, indent=2)
+
+                return jsonify({'ingredients': combined_ingredients})
             else:
                 return "Extracted JSON data is empty", 500
         else:
