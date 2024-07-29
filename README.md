@@ -2,6 +2,20 @@
 
 Create a recipe based on ONLY the ingredients inside your fridge! Skip the store and simply cook with this HTML Website + Flask Server Host + OpenAI API Integration.
 
+# Key Skills Demonstrated
+
+- Web Development: Developed a full-stack web application using Flask, showcasing proficiency in creating dynamic web pages and handling HTTP requests. Designed and implemented user-friendly and responsive web pages using HTML and CSS, ensuring compatibility across different browsers and devices. Utilized JavaScript for enhanced interactivity and functionality on the client side.
+- API Integration: Integrated OpenAI's GPT models to generate recipe content dynamically, demonstrating the ability to work with external APIs and manage API requests effectively. Utilized the Requests library for seamless API communication, ensuring efficient data retrieval and handling.
+- Data Management: Managed data storage and retrieval using JSON, demonstrating skills in data serialization and deserialization. Implemented file handling operations to read, write, and update JSON files, showcasing proficiency in managing data persistence in a web application.
+- Error Handling and Debugging: Implemented robust error handling mechanisms to ensure the application gracefully handles unexpected scenarios and provides meaningful error messages to users. Set up detailed logging to track application behavior and debug issues effectively, demonstrating the ability to maintain and troubleshoot a complex codebase.
+- User Interface and Experience: Enhanced user experience by integrating a custom cursor across the web application, demonstrating attention to detail and UX design skills. Ensured that the application is fully responsive, providing an optimal viewing experience across a wide range of devices.
+- Version Control and Collaboration: Used Git for version control, maintaining a clean commit history and leveraging branches for feature development and bug fixes. Utilized GitHub for project collaboration, managing issues, pull requests, and project documentation effectively.
+- Project Management: Created comprehensive project documentation, including setup instructions, usage guidelines, and key features, ensuring the project is easily understandable and maintainable. Managed project tasks efficiently, prioritizing features and bug fixes to meet project milestones and deadlines.
+- Deployment and Hosting: Configured a local development server using Flask, demonstrating the ability to set up and manage development environments. Conducted extensive testing and debugging to ensure the application runs smoothly and efficiently in a local environment.
+#
+#
+
+
 ## CookAI Flask Application
 
 This Flask application generates recipes in JSON format using OpenAI's GPT-3.5.
