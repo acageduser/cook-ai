@@ -12,6 +12,8 @@ Create a recipe based on ONLY the ingredients inside your fridge! Skip the store
 - Version Control and Collaboration: Used Git for version control, maintaining a clean commit history and leveraging branches for feature development and bug fixes. Utilized GitHub for project collaboration, managing issues, pull requests, and project documentation effectively.
 - Project Management: Created comprehensive project documentation, including setup instructions, usage guidelines, and key features, ensuring the project is easily understandable and maintainable. Managed project tasks efficiently, prioritizing features and bug fixes to meet project milestones and deadlines.
 - Deployment and Hosting: Configured a local development server using Flask, demonstrating the ability to set up and manage development environments. Conducted extensive testing and debugging to ensure the application runs smoothly and efficiently in a local environment.
+
+This project is intedned for educational purposes only.
 #
 #
 
