@@ -20,7 +20,7 @@ This project is intended for educational purposes only.
 
 ## CookAI Flask Application
 
-This Flask application generates recipes in JSON format using OpenAI's GPT-3.5.
+This Flask application generates recipes in JSON format using OpenAI's GPT-4o-turbo.
 
 #### Prerequisites
 
