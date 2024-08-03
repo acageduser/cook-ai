@@ -24,7 +24,7 @@ This Flask application generates recipes in JSON format using OpenAI's GPT-4o-tu
 
 #### Prerequisites
 
-- Python 3.7 or higher (Make sure Python is [added to your system's PATH](https://www.youtube.com/watch?v=iNoQeRj52zo&ab_channel=ChartExplorers))
+- [Python 3.7](https://www.python.org/downloads/release/python-3120/) or higher (Make sure Python is [added to your system's PATH](https://www.youtube.com/watch?v=iNoQeRj52zo&ab_channel=ChartExplorers))
 
 - [pip](https://www.youtube.com/watch?v=fJKdIf11GcI&ab_channel=TheCodeCity)
 
@@ -59,4 +59,5 @@ Open ```start_local-windows_setup_and_server.bat``` (Windows) or ```start_local-
 [```http://127.0.0.1:5000```](http://127.0.0.1:5000)
 This will bring up the CookAI interface where you can generate recipes based on the ingredients you have.
 
+#
 ![image](https://github.com/user-attachments/assets/83203b34-a954-4010-9b11-0ab959d1b4f2)
