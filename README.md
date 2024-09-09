@@ -34,7 +34,7 @@ First, clone the repository to your local machine using git. Open a Git Bash whe
 ```
 git clone https://github.com/acageduser/cook-ai.git
 cd cook-ai/
-./start_local-windows_setup_and_server.bat
+./start_local-windows_setup_and_server.sh
 ```
 This will download the app, go into the correct directory, and start the app's server.
 
