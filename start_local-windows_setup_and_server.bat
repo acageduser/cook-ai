@@ -13,6 +13,7 @@ echo +                        Changing to the Script Directory                  
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 echo.
 cd /d "%~dp0"
+echo Current Directory: %CD%
 
 :: Check if Python 3.x is installed
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
