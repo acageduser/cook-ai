@@ -25,32 +25,26 @@ This Flask application generates recipes in JSON format using OpenAI's GPT-4o-tu
 #### Prerequisites
 
 - [Python 3.7](https://www.python.org/downloads/release/python-3120/) or higher (Make sure Python is [added to your system's PATH](https://www.youtube.com/watch?v=iNoQeRj52zo&ab_channel=ChartExplorers))
-
-- [pip](https://www.youtube.com/watch?v=fJKdIf11GcI&ab_channel=TheCodeCity)
+- [git](https://git-scm.com/download/win)
 
 ## Installation
 
-First, clone the repository to your local machine:
+First, clone the repository to your local machine using git. Open a Git Bash where you want the app to download:
 
 ```
 git clone https://github.com/acageduser/cook-ai.git
-cd cook-ai
+cd cook-ai/
+./start_local-windows_setup_and_server.bat
 ```
+This will download the app, go into the correct directory, and start the app's server.
 
 ## Running the Application
 
 #### Windows
-To start the application on Windows, run the provided batch file:
+To start the application on Windows, open Git Bash inside the cook-ai folder and run:
 
 ```
-start_local-windows_setup_and_server.bat
-```
-
-#### macOS and Linux
-To start the application on macOS or Linux, run the provided shell script:
-
-```
-./start_local-macos-linux.sh
+./start_local-windows_setup_and_server.bat
 ```
 
 ## Accessing the Application
@@ -58,6 +52,10 @@ Open ```start_local-windows_setup_and_server.bat``` (Windows) or ```start_local-
 
 [```http://127.0.0.1:5000```](http://127.0.0.1:5000)
 This will bring up the CookAI interface where you can generate recipes based on the ingredients you have.
+
+#
+![image](https://github.com/user-attachments/assets/83203b34-a954-4010-9b11-0ab959d1b4f2)
+
 
 #
 # TO DO:
@@ -172,9 +170,3 @@ Task List for CookAI Fall 2024
     - Step 3: Create a shopping list that includes any items from the recipe that the user does not have in their fridge.
     - Step 4: Display this shopping list to the user alongside the generated recipe, clearly indicating which ingredients they need to purchase.
     - Step 5: Test the functionality by generating various recipes and verifying that the shopping list accurately reflects missing items based on the fridge contents.
-
-#
-#
-
-#
-![image](https://github.com/user-attachments/assets/83203b34-a954-4010-9b11-0ab959d1b4f2)
