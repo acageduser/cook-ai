@@ -19,7 +19,7 @@ echo +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 echo +                          Checking for Python 3.x                           +
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 echo.
-python --version 2>nul | findstr /r "^Python 3\." >nul
+python --version 2>/dev/null | grep -q "^Python 3\."
 if %ERRORLEVEL% neq 0 (
     echo Python 3.x not found, please install Python 3.12 or any 3.7 or above version and ensure it's added to PATH.
     pause
@@ -34,7 +34,7 @@ echo +                         Ensuring pip 24.1.2 is Installed                 
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 echo.
 python -m ensurepip --upgrade 2>nul
-python -m pip --version 2>nul | findstr "pip 24.1.2" >nul
+python -m pip --version 2>/dev/null | grep -q "pip 24.1.2"
 if %ERRORLEVEL% neq 0 (
     echo Installing pip 24.1.2...
     python -m pip install --upgrade pip==24.1.2
