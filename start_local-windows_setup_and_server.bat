@@ -124,3 +124,5 @@ echo +                          Running the Flask Application                   
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 echo.
 flask run
+
+pause
