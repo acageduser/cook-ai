@@ -1,130 +1,123 @@
-#!/bin/bash
+@echo off
 
-# Starting Local Server
-echo
+:: Starting Local Server
+echo.
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 echo +                               Starting Local Server                        +
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-echo
+echo.
 
-# Change to the directory where the script is located
+:: Change to the directory where the script is located
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 echo +                        Changing to the Script Directory                    +
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-echo
-cd "$(dirname "$0")"
-echo Current Directory: "$(pwd)"
+echo.
+cd /d "%~dp0"
 
-# Check if Python 3.x is installed
+:: Check if Python 3.x is installed
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 echo +                          Checking for Python 3.x                           +
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-echo
-python --version 2>/dev/null | grep -q "^Python 3\."
-if [ $? -ne 0 ]; then
-    echo Python 3.x not found, please install Python 3.12 or any 3.7+ version and ensure it's added to PATH.
-    read -p "Press any key to exit..."
-    exit 1
-else
+echo.
+python --version 2>nul | findstr /r "^Python 3\." >nul
+if %ERRORLEVEL% neq 0 (
+    echo Python 3.x not found, please install Python 3.12 or any 3.7 or above version and ensure it's added to PATH.
+    pause
+    exit /b 1
+) else (
     echo Compatible Python 3.x version is already installed.
-fi
+)
 
-# Ensure pip is installed and correct version
+:: Ensure pip is installed and correct version
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 echo +                         Ensuring pip 24.1.2 is Installed                   +
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-echo
-python -m ensurepip --upgrade 2>/dev/null
-python -m pip --version 2>/dev/null | grep -q "pip 24.1.2"
-if [ $? -ne 0 ]; then
+echo.
+python -m ensurepip --upgrade 2>nul
+python -m pip --version 2>nul | findstr "pip 24.1.2" >nul
+if %ERRORLEVEL% neq 0 (
     echo Installing pip 24.1.2...
     python -m pip install --upgrade pip==24.1.2
-    if [ $? -ne 0 ]; then
+    if %ERRORLEVEL% neq 0 (
         echo Failed to install pip 24.1.2. Please check your Python installation.
-        read -p "Press any key to exit..."
-        exit 1
-    fi
-else
+        pause
+        exit /b 1
+    )
+) else (
     echo pip 24.1.2 is already installed.
-fi
+)
 
-# Create a virtual environment
+:: Create a virtual environment
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 echo +                          Creating Virtual Environment                      +
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-echo
+echo.
 python -m venv venv
 
-# Activate the virtual environment
+:: Activate the virtual environment
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 echo +                         Activating Virtual Environment                     +
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-echo
-if [ -f "venv/Scripts/activate" ]; then
-    source venv/Scripts/activate
-else
+echo.
+if exist "venv\Scripts\activate.bat" (
+    call venv\Scripts\activate
+) else (
     echo Virtual environment activation script not found.
-    read -p "Press any key to exit..."
-    exit 1
-fi
+    pause
+    exit /b 1
+)
 
-# Install Flask
+:: Install Flask
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 echo +                              Installing Flask                              +
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-echo
+echo.
 pip install Flask
-if [ $? -ne 0 ]; then
+if %ERRORLEVEL% neq 0 (
     echo Failed to install Flask. Please check your Python installation.
-    read -p "Press any key to exit..."
-    exit 1
-fi
+    pause
+    exit /b 1
+)
 
-# Install the required dependencies
+:: Install the required dependencies
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 echo +                       Installing Required Dependencies                     +
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-echo
-if [ -f "requirements.txt" ]; then
-    pip install -r requirements.txt
-    if [ $? -ne 0 ]; then
-        echo Failed to install dependencies from requirements.txt.
-        read -p "Press any key to exit..."
-        exit 1
-    fi
-else
-    echo ERROR: requirements.txt not found.
-    read -p "Press any key to exit..."
-    exit 1
-fi
+echo.
+pip install -r requirements.txt
+if %ERRORLEVEL% neq 0 (
+    echo Failed to install dependencies from requirements.txt.
+    pause
+    exit /b 1
+)
 
-# Upgrade to a specific version of the OpenAI API
+:: Upgrade to a specific version of the OpenAI API
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 echo +                  Upgrading to a Specific Version of OpenAI API             +
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-echo
+echo.
 pip install openai==1.35.15
-if [ $? -ne 0 ]; then
+if %ERRORLEVEL% neq 0 (
     echo Failed to install OpenAI API version 1.35.15.
-    read -p "Press any key to exit..."
-    exit 1
-fi
+    pause
+    exit /b 1
+)
 
-# Install additional libraries
+:: Install additional libraries
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 echo +                        Install Pillow and requests                         +
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-echo
+echo.
 pip install Pillow requests
-if [ $? -ne 0 ]; then
+if %ERRORLEVEL% neq 0 (
     echo Failed to install Pillow and requests.
-    read -p "Press any key to exit..."
-    exit 1
-fi
+    pause
+    exit /b 1
+)
 
-# Run the Flask application
+:: Run the Flask application
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 echo +                          Running the Flask Application                     +
 echo ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-echo
+echo.
 flask run
