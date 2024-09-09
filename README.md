@@ -44,11 +44,11 @@ This will download the app, go into the correct directory, and start the app's s
 To start the application on Windows, open Git Bash inside the cook-ai folder and run:
 
 ```
-./start_local-windows_setup_and_server.bat
+./start_local-windows_setup_and_server.sh
 ```
 
 ## Accessing the Application
-Open ```start_local-windows_setup_and_server.bat``` (Windows) or ```start_local-mac.sh``` (mac/Linux). This is the local server. Once the local server is running, open your web browser and navigate to:
+Open ```start_local-windows_setup_and_server.bat``` (Windows). This is the local server. Once the local server is running, open your web browser and navigate to:
 
 [```http://127.0.0.1:5000```](http://127.0.0.1:5000)
 This will bring up the CookAI interface where you can generate recipes based on the ingredients you have.
