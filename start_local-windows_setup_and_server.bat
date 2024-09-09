@@ -72,4 +72,5 @@ echo.
 flask run
 call :check_error
 
-pause
+cmd /k
+
