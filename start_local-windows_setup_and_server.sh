@@ -15,37 +15,37 @@ echo
 cd "$(dirname "$0")" || { echo "Failed to change directory"; exit 1; }
 echo "Current Directory: $(pwd)"
 
-# Check if Python 3.x is installed
+# Check if Python 3.7+ is installed
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-echo "+                          Checking for Python 3.x                           +"
+echo "+                          Checking for Python 3.7+                          +"
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 echo
 python --version 2>/dev/null | grep -q "^Python 3\."
 if [ $? -ne 0 ]; then
-    echo "Python 3.x not found, please install Python 3.12 or any 3.7 or above version and ensure it's added to PATH."
+    echo "Python 3.7+ not found, please install Python 3.12 or any 3.7 or above version and ensure it's added to PATH."
     read -p "Press any key to exit..." 
     exit 1
 else
-    echo "Compatible Python 3.x version is already installed."
+    echo "Compatible Python 3.7+ version is already installed."
 fi
 
 # Ensure pip is installed and the correct version
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
-echo "+                         Ensuring pip 24.1.2 is Installed                   +"
+echo "+                         Ensuring pip 24.2 is Installed                     +"
 echo "++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
 echo
 python -m ensurepip --upgrade 2>/dev/null
-python -m pip --version 2>/dev/null | grep -q "pip 24.1.2"
+python -m pip --version 2>/dev/null | grep -q "pip 24.2"
 if [ $? -ne 0 ]; then
-    echo "Installing pip 24.1.2..."
-    python -m pip install --upgrade pip==24.1.2
+    echo "Installing pip 24.2..."
+    python -m pip install --upgrade pip==24.2
     if [ $? -ne 0 ]; then
-        echo "Failed to install pip 24.1.2. Please check your Python installation."
+        echo "Failed to install pip 24.2. Please check your Python installation."
         read -p "Press any key to exit..." 
         exit 1
     fi
 else
-    echo "pip 24.1.2 is already installed."
+    echo "pip 24.2 is already installed."
 fi
 
 # Create a virtual environment
