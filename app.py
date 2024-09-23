@@ -31,6 +31,10 @@ def kitchen():
 def fridge():
     return render_template('Fridge — CookAI.html')
 
+@app.route('/login')
+def login():
+    return render_template('Login — CookAI.html')
+
 def validate_json(file_path):
     try:
         with open(file_path, 'r') as file:
