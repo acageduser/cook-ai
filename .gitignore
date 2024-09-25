@@ -22,6 +22,9 @@ var/
 .installed.cfg
 *.egg
 
+# PyInstaller files
+*.spec
+
 # Logs and databases
 *.log
 attempt_log.txt
@@ -29,6 +32,7 @@ attempt_log.txt
 # OS-specific files
 .DS_Store
 Thumbs.db
+desktop.ini
 
 # Environment variables
 .env
@@ -37,3 +41,8 @@ Thumbs.db
 response/
 haul/
 root/
+
+# IDE-specific files
+.idea/
+.vscode/
+*.swp
