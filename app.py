@@ -6,6 +6,12 @@ import os
 import base64
 import requests
 import logging
+import webbrowser
+from threading import Timer
+import webview
+
+
+print("Current working directory:", os.getcwd())
 
 app = Flask(__name__)
 
@@ -30,6 +36,23 @@ def kitchen():
 @app.route('/fridge')
 def fridge():
     return render_template('Fridge — CookAI.html')
+    
+# ---
+# Use the current working directory to store haul.json
+current_working_dir = os.getcwd()
+haul_directory = os.path.join(current_working_dir, 'haul')
+
+# Ensure the directory exists
+if not os.path.exists(haul_directory):
+    os.makedirs(haul_directory)
+
+# Define the path for haul.json
+food_list_file = os.path.join(haul_directory, 'haul.json')
+# ---
+
+# Auto open the broswer here
+def open_browser():
+    webbrowser.open_new("http://127.0.0.1:5000")
 
 @app.route('/login')
 def login():
@@ -76,12 +99,13 @@ def generate():
                 logger.error("User input is required")
                 return jsonify({"error": "User input is required"}), 400
 
-            haul_filepath = os.path.join(app.root_path, 'haul', 'haul.json')
-            if not os.path.exists(haul_filepath):
+               # No longer using the hard coded haul_filepath
+            # haul_filepath = os.path.join(app.root_path, 'haul', 'haul.json')
+            if not os.path.exists(food_list_file):
                 logger.error("No ingredients found. Please add items to your fridge first.")
                 return jsonify({"error": "No ingredients found. Please add items to your fridge first."}), 400
 
-            with open(haul_filepath, 'r') as file:
+            with open(food_list_file, 'r') as file:
                 ingredients_list = json.load(file)
                 if not ingredients_list:
                     logger.error("No ingredients found in haul.json")
@@ -167,11 +191,11 @@ def upload_haul():
         return "No selected file", 400
     
     if file and api_key:
-        directory = os.path.join(app.root_path, 'haul')
-        if not os.path.exists(directory):
-            os.makedirs(directory)
+        # Correct usage of haul_directory instead of directory
+        if not os.path.exists(haul_directory):
+            os.makedirs(haul_directory)
 
-        filepath = os.path.join(directory, 'haul.jpeg')
+        filepath = os.path.join(haul_directory, 'haul.jpeg')
         file.save(filepath)
         
         with open(filepath, "rb") as image_file:
@@ -212,7 +236,7 @@ def upload_haul():
             print(f"Extracted JSON data:\n{json_data}\n")
             
             if json_data.strip():  # Check if json_data is not empty
-                json_filepath = os.path.join(directory, 'haul.json')
+                json_filepath = os.path.join(haul_directory, 'haul.json')
                 new_ingredients = json.loads(json_data).get('ingredients', [])
 
                 # Append to the existing haul.json file
@@ -223,12 +247,9 @@ def upload_haul():
                 else:
                     existing_ingredients = []
 
-                # Append new ingredients to existing ones
+                # Append new ingredients to existing ones and remove duplicates
                 combined_ingredients = existing_ingredients + new_ingredients
-
-                # Remove duplicates while preserving order
-                seen = set()
-                combined_ingredients = [item for item in combined_ingredients if not (item in seen or seen.add(item))]
+                combined_ingredients = list(dict.fromkeys(combined_ingredients))  # Remove duplicates while preserving order
 
                 with open(json_filepath, 'w') as json_file:
                     json.dump({'ingredients': combined_ingredients}, json_file, indent=2)
@@ -249,12 +270,11 @@ def generate_recipes():
             return jsonify(error="API key is required"), 400
 
         # Check if the haul.json file exists
-        haul_filepath = os.path.join(app.root_path, 'haul', 'haul.json')
-        if not os.path.exists(haul_filepath):
+        if not os.path.exists(food_list_file):
             return jsonify(error="No ingredients found. Please add items to your fridge first."), 400
 
         try:
-            with open(haul_filepath, 'r') as file:
+            with open(food_list_file, 'r') as file:
                 ingredients_data = json.load(file)
                 ingredients_list = ingredients_data.get('ingredients', [])
                 if not ingredients_list:
@@ -299,12 +319,12 @@ def generate_recipes():
         # Convert the extracted JSON text to a Python object
         recipes = json.loads(json_text)
 
-        # Save the extracted JSON to recipes.json
-        json_filepath = os.path.join(app.root_path, 'haul', 'recipes.json')
-        with open(json_filepath, 'w') as json_file:
+        # Save the extracted JSON to recipes.json in the local haul folder
+        recipes_filepath = os.path.join(haul_directory, 'recipes.json')  # Use the local haul_directory
+        with open(recipes_filepath, 'w') as json_file:
             json.dump(recipes, json_file, indent=2)
 
-        # Render the updated HTML template with recipes
+        # Return the generated recipes
         return jsonify(recipes=recipes)
 
     except Exception as e:
@@ -314,12 +334,13 @@ def generate_recipes():
 @app.route('/get-food-list', methods=['GET'])
 def get_food_list():
     try:
-        haul_filepath = os.path.join(app.root_path, 'haul', 'haul.json')
-        if not os.path.exists(haul_filepath):
-            return jsonify({"ingredients": []}), 200
-        with open(haul_filepath, 'r') as file:
-            data = json.load(file)
-        return jsonify(data)
+        # Load haul.json file
+        if os.path.exists(food_list_file):
+            with open(food_list_file, 'r') as file:
+                data = json.load(file)
+                return jsonify(data)  # Expecting data to include 'ingredients'
+        else:
+            return jsonify({"ingredients": []})  # If no file, send empty list
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -364,9 +385,13 @@ def delete_food():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+
 @app.route('/add-food', methods=['POST'])
 def add_food():
     try:
+        logger.debug(f"Current working directory: {os.getcwd()}")
+        logger.debug(f"Expected haul.json location: {food_list_file}")
+
         data = request.json
         new_food = data['newFood']
 
@@ -424,4 +449,10 @@ def check_haul():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Start the Flask app in a separate thread
+    import threading
+    threading.Thread(target=lambda: app.run(debug=True, use_reloader=False)).start()
+
+    # Open the local server in a webview window
+    webview.create_window("CookAI", "http://127.0.0.1:5000", width=1024, height=768)
+    webview.start()

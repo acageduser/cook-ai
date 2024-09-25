@@ -42,6 +42,32 @@
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <style>
+<!--
+This part fixes the fridge page's formatting. PLEASE PLEASE do not edit. PLEASE PLEASE :) BEGIN:
+-->
+
+	.full-bleed-section {
+		width: 100vw;
+		margin: 0;
+		padding: 0;
+	}
+
+	.background-width--full-bleed {
+		width: 100vw !important;
+	}
+
+	#middle-section {
+		width: 100vw;
+		background-color: #3F5A36;
+		padding: 40px 0;
+		position: relative;
+		z-index: 1;
+	}
+	
+<!--
+This part fixes the fridge page's formatting. PLEASE PLEASE do not edit. PLEASE PLEASE :) END.
+-->
+
     #notification-banner {
         position: fixed;
         top: 0;
@@ -67,15 +93,16 @@
 		width: 100%; /* Ensure it uses the full width of its column */
 	}
 
-    body {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-        min-height: 100vh;
-        background-color: #f4f4f4;
-        margin: 0;
-    }
+	body {
+		margin: 0;
+		padding: 0;
+		background-color: #f4f4f4; /* Background for the page */
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: flex-start;
+		min-height: 100vh;
+	}
 
     #recipes-container {
         width: 100%;
@@ -2254,25 +2281,25 @@
         });
 
         // Load the current food list from the server
-        function loadFoodList() {
-            $.getJSON('/get-food-list', function(data) {
-                const foodListBody = $('#food-list-body');
-                foodListBody.empty(); // Clear the table body
+		function loadFoodList() {
+			$.getJSON('/get-food-list', function(data) {
+				const foodListBody = $('#food-list-body');
+				foodListBody.empty(); // Clear the table body
 
-                data.ingredients.forEach((food, index) => {
-                    const row = $('<tr>');
-                    row.append(`<td class="food-name-column food-name">${food}</td>`);
-                    row.append(`
-                        <td class="edit-food-column edit-food-container">
-                            <input type="text" id="edit-food-${index}" value="${food}">
-                            <button onclick="saveFood(${index})">Save</button>
-                        </td>
-                    `);
-                    row.append(`<td class="delete-food-column"><button onclick="deleteFood(${index})">Delete</button></td>`);
-                    foodListBody.append(row);
-                });
-            });
-        }
+				data.ingredients.forEach((food, index) => {
+					const row = $('<tr>');
+					row.append(`<td class="food-name-column food-name">${food}</td>`);
+					row.append(`
+						<td class="edit-food-column edit-food-container">
+							<input type="text" id="edit-food-${index}" value="${food}">
+							<button onclick="saveFood(${index})">Save</button>
+						</td>
+					`);
+					row.append(`<td class="delete-food-column"><button onclick="deleteFood(${index})">Delete</button></td>`);
+					foodListBody.append(row);
+				});
+			});
+		}
 
         // Initial load of food list
         loadFoodList();
@@ -2818,10 +2845,10 @@
     }
   }
 
-</style><div class="fluid-engine fe-660deee495df53341bd7605f"><div class="fe-block fe-block-yui_3_17_2_1_1712187667812_10468"><div class="sqs-block code-block sqs-block-code" data-block-type="23" id="block-yui_3_17_2_1_1712187667812_10468"><div class="sqs-block-content"><p class="preFade" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.545806s;">Input the code for the ingredients checkbox list here</p></div></div></div><div class="fe-block fe-block-yui_3_17_2_1_1712187667812_17423" style="mix-blend-mode: normal;"><div class="sqs-block html-block sqs-block-html" data-blend-mode="NORMAL" data-block-type="2" data-border-radii="{&quot;topLeft&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;topRight&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;bottomLeft&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;bottomRight&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0}}" id="block-yui_3_17_2_1_1712187667812_17423"><div class="sqs-block-content">
+</style><div class="fluid-engine fe-660deee495df53341bd7605f"><div class="fe-block fe-block-yui_3_17_2_1_1712187667812_10468"><div class="sqs-block code-block sqs-block-code" data-block-type="23" id="block-yui_3_17_2_1_1712187667812_10468"><div class="sqs-block-content"><p class="preFade" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.545806s;"><!--Input the code for the ingredients checkbox list here--></p></div></div></div><div class="fe-block fe-block-yui_3_17_2_1_1712187667812_17423" style="mix-blend-mode: normal;"><div class="sqs-block html-block sqs-block-html" data-blend-mode="NORMAL" data-block-type="2" data-border-radii="{&quot;topLeft&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;topRight&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;bottomLeft&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;bottomRight&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0}}" id="block-yui_3_17_2_1_1712187667812_17423"><div class="sqs-block-content">
 
 <div class="sqs-html-content">
-  <p class="preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.549677s;">Note: We are sorry but at the current version of Cook AI you are not able to edit the item list. This feature will be implemented with the official release of the Cook AI in December 2024!<br>For now, Cook AI will use a pre-coded list of ingredients that are indicated by a checkmark. </p>
+  <p class="preFade" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.549677s;"><!--Note: We are sorry but at the current version of Cook AI you are not able to edit the item list. This feature will be implemented with the official release of the Cook AI in December 2024!--><br><!--For now, Cook AI will use a pre-coded list of ingredients that are indicated by a checkmark. --></p>
 </div>
 
 

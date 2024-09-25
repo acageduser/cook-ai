@@ -1503,60 +1503,44 @@
         document.addEventListener("DOMContentLoaded", function() {
             const form = document.getElementById("generate-form");
 
-            form.addEventListener("submit", function(event) {
-                event.preventDefault(); // Prevent the form from submitting the traditional way
+			form.addEventListener("submit", function(event) {
+				event.preventDefault(); // Prevent the form from submitting the traditional way
 
-                const user_input = document.querySelector("input[name='user_input']").value;
-                const api_key = document.querySelector("input[name='api_key']").value;
+				const user_input = document.querySelector("input[name='user_input']").value;
+				const api_key = document.querySelector("input[name='api_key']").value;
 
-                // Show the loading overlay
-                document.getElementById("loading-overlay").style.display = "flex";
+				// Show the loading overlay
+				document.getElementById("loading-overlay").style.display = "flex";
 
-                // Make an AJAX request to check if haul.json exists
-                fetch('/check-haul')
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.exists) {
-                            // If the file exists, submit the form data to the generate endpoint
-                            fetch('/generate', {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify({ user_input: user_input, api_key: api_key }),
-                            })
-                            .then(response => {
-                                if (!response.ok) {
-                                    throw new Error('Network response was not ok');
-                                }
-                                return response.json();
-                            })
-                            .then(result => {
-                                if (result.error) {
-                                    throw new Error(result.error);
-                                }
-                                // Handle the result of the generate endpoint
-                                console.log("Recipe generated successfully");
-                                document.getElementById("loading-overlay").style.display = "none";
-                                window.location.href = '/generate'; // Redirect to the generate page
-                            })
-                            .catch(error => {
-                                console.error('Error generating recipe:', error);
-                                showNotification('Failed to generate recipe.', true);
-                                document.getElementById("loading-overlay").style.display = "none";
-                            });
-                        } else {
-                            // If the file does not exist, show a notification and hide the loading overlay
-                            showNotification('No ingredients found. Please add items to your fridge first.', true);
-                            document.getElementById("loading-overlay").style.display = "none";
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error checking haul.json:', error);
-                        showNotification('There is nothing in your fridge! Add items to your fridge first!', true);
-                        document.getElementById("loading-overlay").style.display = "none";
-                    });
-            });
+				// Directly submit the form data to the generate endpoint for the Beta version
+				fetch('/generate', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ user_input: user_input, api_key: api_key }),
+				})
+				.then(response => {
+					if (!response.ok) {
+						throw new Error('Network response was not ok');
+					}
+					return response.json();
+				})
+				.then(result => {
+					if (result.error) {
+						throw new Error(result.error);
+					}
+					// Handle the result of the generate endpoint
+					console.log("Recipe generated successfully");
+					document.getElementById("loading-overlay").style.display = "none";
+					window.location.href = '/generate'; // Redirect to the generate page
+				})
+				.catch(error => {
+					console.error('Error generating recipe:', error);
+					showNotification('Failed to generate recipe.', true);
+					document.getElementById("loading-overlay").style.display = "none";
+				});
+			});
 
             // Function to show notification banner
             function showNotification(message, isError = false) {
