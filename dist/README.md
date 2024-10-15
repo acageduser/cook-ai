@@ -1,6 +1,7 @@
 How to Build the CookAI Executable:
 
 Important: Do NOT run CMD as an Administrator! PyInstaller will fail in Admin mode.
+	You must have pyInstaller on your machine in order to build! Use pip: pip install -U pyinstaller
 
 Steps:
 
