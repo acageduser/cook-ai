@@ -22,4 +22,8 @@ This will generate a standalone executable with the custom icon from static/img/
 
 
 Notes ~
-1. You might have to install some things while the virtual environment is running, and other times while it's not running.
+1. You might have to install some things while the virtual environment is running, and other 
+	times while it's not running.
+2. The new cookai.exe file will appear in this folder (Dist/cookai.exe). Please copy the .exe 
+	to the root directory each time you push if you made changes to the .exe so we have an updated
+	version every time!
