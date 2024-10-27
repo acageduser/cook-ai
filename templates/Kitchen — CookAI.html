@@ -592,6 +592,15 @@
   
 
 
+  
+    <div class="header-nav-item header-nav-item--collection">
+      <a href="http://127.0.0.1:5000/profile" data-animation-role="header-element" class="preFade fadeIn" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.0428571s;">
+        Profile
+      </a>
+    </div>
+  
+  
+  
 
                     </nav>
                   </div>
@@ -729,6 +738,16 @@
   
   
 
+
+  
+    <div class="header-nav-item header-nav-item--collection">
+      <a href="http://127.0.0.1:5000/profile" data-animation-role="header-element" class="preFade" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.171429s;">
+        Profile
+      </a>
+    </div>
+  
+  
+  
 
 
                     </nav>
@@ -1115,7 +1134,19 @@
         
       
     
-  
+      
+        
+          
+            <div class="container header-menu-nav-item header-menu-nav-item--collection">
+              <a href="http://127.0.0.1:5000/profile">
+                <div class="header-menu-nav-item-content">
+                  Profile
+                </div>
+              </a>
+            </div>
+          
+        
+      
 </div>
 
               
@@ -1500,116 +1531,220 @@
 
     <!-- JavaScript for handling the form submission and showing the overlay -->
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const form = document.getElementById("generate-form");
+    document.addEventListener("DOMContentLoaded", function() {
+        const form = document.getElementById("generate-form");
+        
+        form.addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent traditional form submission
+            
+            const user_input = document.querySelector("input[name='user_input']").value;
+            const api_key = document.querySelector("input[name='api_key']").value;
 
-			form.addEventListener("submit", function(event) {
-				event.preventDefault(); // Prevent the form from submitting the traditional way
+            // Show the loading overlay
+            document.getElementById("loading-overlay").style.display = "flex";
 
-				const user_input = document.querySelector("input[name='user_input']").value;
-				const api_key = document.querySelector("input[name='api_key']").value;
-
-				// Show the loading overlay
-				document.getElementById("loading-overlay").style.display = "flex";
-
-				// Directly submit the form data to the generate endpoint for the Beta version
-				fetch('/generate', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({ user_input: user_input, api_key: api_key }),
-				})
-				.then(response => {
-					if (!response.ok) {
-						throw new Error('Network response was not ok');
-					}
-					return response.json();
-				})
-				.then(result => {
-					if (result.error) {
-						throw new Error(result.error);
-					}
-					// Handle the result of the generate endpoint
-					console.log("Recipe generated successfully");
-					document.getElementById("loading-overlay").style.display = "none";
-					window.location.href = '/generate'; // Redirect to the generate page
-				})
-				.catch(error => {
-					console.error('Error generating recipe:', error);
-					showNotification('Failed to generate recipe.', true);
-					document.getElementById("loading-overlay").style.display = "none";
-				});
-			});
-
-            // Function to show notification banner
-            function showNotification(message, isError = false) {
-                const banner = document.getElementById("notification-banner");
-                banner.textContent = message;
-                if (isError) {
-                    banner.classList.add("error");
-                } else {
-                    banner.classList.remove("error");
-                }
-                banner.style.display = "block";
-                setTimeout(() => {
-                    banner.style.display = "none";
-                }, 2000);
-            }
-
-            // Handle recipe generation from fridge
-            $('#generate-recipes-form').submit(function(event) {
-                event.preventDefault(); // Prevent the form from submitting the traditional way
-
-                const apiKey = $('#api_key_recipes').val();
-
-                // Show the loading overlay
-                $('#loading-overlay').show();
-
-                $.ajax({
-                    url: '/generate-recipes',
-                    method: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({ api_key_recipes: apiKey }),
-                    success: function(response) {
-                        console.log(response); // Debugging line to check the response structure
-                        let recipesHtml = '<h2>Generated Recipes:</h2>';
-                        response.recipes.forEach(recipe => {
-                            recipesHtml += `<div><strong>${recipe.meal}</strong> (Serving size: ${recipe.serving_size})</div>`;
-                            recipesHtml += `<ul>`;
-                            recipe.ingredients.forEach(ingredient => {
-                                recipesHtml += `<li>${ingredient}</li>`;
-                            });
-                            recipesHtml += `</ul>`;
-                            recipesHtml += `<div><strong>Instructions:</strong></div>`;
-                            recipesHtml += `<ol>`;
-                            recipe.instructions.forEach(instruction => {
-                                recipesHtml += `<li>${instruction}</li>`;
-                            });
-                            recipesHtml += `</ol>`;
-                            recipesHtml += `<hr>`;
+            // Make an AJAX request to check if haul.json exists
+            fetch('/check-haul')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.exists) {
+                        // If the file exists, submit the form data to the generate endpoint
+                        fetch('/generate', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ user_input: user_input, api_key: api_key }),
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(result => {
+                            if (result.error) {
+                                throw new Error(result.error);
+                            }
+                            // Handle the result of the generate endpoint
+                            console.log("Recipe generated successfully");
+                            document.getElementById("loading-overlay").style.display = "none";
+                            window.location.href = '/generate'; // Redirect to the generate page
+                        })
+                        .catch(error => {
+                            console.error('Error generating recipe:', error);
+                            showNotification('Failed to generate recipe.', true);
+                            document.getElementById("loading-overlay").style.display = "none";
                         });
-                        $('#recipes-container').html(recipesHtml);
-                        showNotification('Recipes generated successfully!');
-                    },
-                    error: function(xhr) {
-                        let errorMessage = 'An error occurred while generating recipes';
-                        try {
-                            const responseJSON = JSON.parse(xhr.responseText);
-                            errorMessage = responseJSON.error;
-                        } catch (e) {
-                            errorMessage = 'An unexpected error occurred';
-                        }
-                        showNotification(`Failed to generate recipes: ${errorMessage}`, true);
-                    },
-                    complete: function() {
-                        // Hide the loading overlay
-                        $('#loading-overlay').hide();
+                    } else {
+                        showNotification('No ingredients found. Please add items to your fridge first.', true);
+                        document.getElementById("loading-overlay").style.display = "none";
                     }
+                })
+                .catch(error => {
+                    console.error('Error checking haul.json:', error);
+                    showNotification('There is nothing in your fridge! Add items to your fridge first!', true);
+                    document.getElementById("loading-overlay").style.display = "none";
                 });
+        });
+
+        // Handle recipe generation from fridge
+        $('#generate-recipes-form').submit(function(event) {
+            event.preventDefault(); // Prevent traditional form submission
+
+            const apiKey = $('#api_key_recipes').val();
+						
+					
+			   
+										 
+	   
+																		
+	  
+					   
+						
+													 
+	  
+							
+	  
+					 
+						
+									
+	  
+												  
+												  
+																	   
+																		 
+	  
+					 
+													  
+														  
+																	   
+	   
+	  
+
+            // Show the loading overlay
+            $('#loading-overlay').show();
+																			  
+											 
+							  
+												  
+						
+													 
+				 
+											   
+								  
+												  
+						 
+			 
+
+            $.ajax({
+                url: '/generate-recipes',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ api_key_recipes: apiKey }),
+                success: function(response) {
+                    console.log(response); // Debugging line to check the response structure
+                    let recipesHtml = '<h2>Generated Recipes:</h2>';
+                    response.recipes.forEach(recipe => {
+                        recipesHtml += `<div><strong>${recipe.meal}</strong> (Serving size: ${recipe.serving_size})</div>`;
+                        
+                        if (recipe.type) {
+                            recipesHtml += `<div><strong>Type:</strong> ${recipe.type}</div>`;
+                        }
+
+                        if (recipe.allergies && recipe.allergies.length > 0) {
+                            recipesHtml += `<div><strong>Allergies Considered:</strong> ${recipe.allergies.join(', ')}</div>`;
+                        }
+
+                        if (recipe.prep_time) {
+                            recipesHtml += `<div><strong>Prep Time:</strong> ${recipe.prep_time}</div>`;
+                        }
+
+                        // Check if ingredients is an object and loop through key-value pairs
+                        if (typeof recipe.ingredients === 'object' && recipe.ingredients !== null) {
+								   
+													
+																	  
+												 
+																								
+																		
+															
+																															   
+                            recipesHtml += `<ul>`;
+                            for (const [ingredient, quantity] of Object.entries(recipe.ingredients)) {
+                                recipesHtml += `<li>${ingredient}: ${quantity}</li>`;
+                            }
+                            recipesHtml += `</ul>`;
+                        } else {
+                            recipesHtml += `<div><strong>Ingredients:</strong> No ingredients available</div>`;
+												  
+																		
+																		 
+							   
+												   
+												  
+						   
+																  
+																			
+					  
+										  
+																						
+							 
+																			  
+															  
+									 
+																		  
+                        }
+
+                        // Add the instructions
+                        recipesHtml += `<div><strong>Instructions:</strong></div>`;
+                        recipesHtml += `<ol>`;
+                        recipe.instructions.forEach(instruction => {
+                            recipesHtml += `<li>${instruction}</li>`;
+                        });
+                        recipesHtml += `</ol>`;
+                        recipesHtml += `<hr>`;
+                    });
+                    $('#recipes-container').html(recipesHtml);
+                    showNotification('Recipes generated successfully!');
+                },
+
+                error: function(xhr) {
+                    let errorMessage = 'An error occurred while generating recipes';
+                    try {
+                        const responseJSON = JSON.parse(xhr.responseText);
+                        errorMessage = responseJSON.error;
+                    } catch (e) {
+                        errorMessage = 'An unexpected error occurred';
+                    }
+                    showNotification(`Failed to generate recipes: ${errorMessage}`, true);
+                },
+                complete: function() {
+                    // Hide the loading overlay
+                    $('#loading-overlay').hide();
+                }
             });
         });
-    </script>
+
+        // Function to show notification banner
+        function showNotification(message, isError = false) {
+            const banner = document.getElementById("notification-banner");
+            banner.textContent = message;
+            if (isError) {
+                banner.classList.add("error");
+            } else {
+                banner.classList.remove("error");
+            }
+            banner.style.display = "block";
+            setTimeout(() => {
+                banner.style.display = "none";
+            }, 2000);
+        }
+    });
+</script>
+
+
+
 
 
   <!-- JavaScript for handling the form submission and showing the overlay -->
@@ -2123,7 +2258,26 @@
 </div></div></div><div class="fe-block fe-block-3387748b39c2822d81bd" style="mix-blend-mode: normal;"><div class="sqs-block html-block sqs-block-html" data-blend-mode="NORMAL" data-block-type="2" data-border-radii="{&quot;topLeft&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;topRight&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;bottomLeft&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0},&quot;bottomRight&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;value&quot;:0.0}}" id="block-3387748b39c2822d81bd"><div class="sqs-block-content preFade fadeIn" style="transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.45s;">
 
 <div class="sqs-html-content">
-  <h4 style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.471429s;" class="preFade fadeIn"><strong>Navigation</strong></h4><p class="sqsrte-small preFade fadeIn" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.492857s;"><a href="http://127.0.0.1:5000">Home</a></p><p class="sqsrte-small preFade fadeIn" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.514286s;"><a href="http://127.0.0.1:5000/kitchen" target="">Kitchen</a></p><p class="sqsrte-small preFade fadeIn" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.535714s;"><a href="http://127.0.0.1:5000/fridge">Fridge</a></p><p class="sqsrte-small preFade" data-rte-preserve-empty="true" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.557143s;"></p>
+  <h4 style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.471429s;" class="preFade fadeIn"><strong>Navigation</strong></h4>
+  
+  <p class="sqsrte-small preFade fadeIn" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.492857s;">
+    <a href="http://127.0.0.1:5000">Home</a>
+  </p>
+  
+  <p class="sqsrte-small preFade fadeIn" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.514286s;">
+    <a href="http://127.0.0.1:5000/kitchen" target="">Kitchen</a>
+  </p>
+  
+  <p class="sqsrte-small preFade fadeIn" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.535714s;">
+    <a href="http://127.0.0.1:5000/fridge">Fridge</a>
+  </p>
+
+  <!-- New Profile Link with same settings as Fridge -->
+  <p class="sqsrte-small preFade fadeIn" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.557143s;">
+    <a href="http://127.0.0.1:5000/profile">Profile</a>
+  </p>
+  
+  <p class="sqsrte-small preFade" data-rte-preserve-empty="true" style="white-space: pre-wrap; transition-timing-function: ease; transition-duration: 0.9s; transition-delay: 0.578571s;"></p>
 </div>
 
 
