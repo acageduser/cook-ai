@@ -5,6 +5,7 @@ from openai import OpenAI
 import os
 import base64
 import requests
+import shutil            
 import logging
 import webbrowser
 from threading import Timer
@@ -57,6 +58,10 @@ def open_browser():
 @app.route('/login')
 def login():
     return render_template('Login — CookAI.html')
+
+@app.route('/profile')
+def profile():
+    return render_template('Profile — CookAI.html')
 
 def validate_json(file_path):
     try:
@@ -249,6 +254,8 @@ def upload_haul():
 
                 # Append new ingredients to existing ones and remove duplicates
                 combined_ingredients = existing_ingredients + new_ingredients
+                # Remove duplicates while preserving order
+                seen = set()                                                                                     
                 combined_ingredients = list(dict.fromkeys(combined_ingredients))  # Remove duplicates while preserving order
 
                 with open(json_filepath, 'w') as json_file:
@@ -286,11 +293,50 @@ def generate_recipes():
         if isinstance(ingredients_list, list):
             ingredients_list = [ingredient if isinstance(ingredient, str) else str(ingredient) for ingredient in ingredients_list]
 
-        # Construct the prompt for the OpenAI API
+        # Load additional conditions from genConditions.json
+        gen_conditions_path = os.path.join(app.root_path, 'haul', 'genConditions.json')
+        haul_conditions_path = os.path.join(app.root_path, 'haul', 'haulConditions.json')
+
+        # Initialize variables for conditions
+        serving_size = None
+        prep_time = None
+        recipe_type = None
+        allergies = None
+
+        # Load general conditions (serving size and prep time)
+        if os.path.exists(gen_conditions_path):
+            with open(gen_conditions_path, 'r') as conditions_file:
+                gen_conditions = json.load(conditions_file)
+                serving_size = gen_conditions.get('serving_size')
+                prep_time = gen_conditions.get('prep_time')
+
+        # Load specific conditions (diet and allergies)
+        if os.path.exists(haul_conditions_path):
+            with open(haul_conditions_path, 'r') as conditions_file:
+                haul_conditions = json.load(conditions_file)
+                recipe_type = haul_conditions.get('diets')
+                allergies = haul_conditions.get('allergies')                                             
+        # Construct the OpenAI prompt with all available conditions
         prompt_parts = [
-            f"Generate 10 different meals I can make with this set of food: {', '.join(ingredients_list)}.",
-            "Please format the recipes as a JSON array with each recipe containing 'meal', 'serving_size', 'ingredients', and 'instructions'."
+            f"Generate 10 different meals I can make with this set of food: {', '.join(ingredients_list)}."
+                                                                                                                                              
         ]
+
+        if serving_size:
+            prompt_parts.append(f"Each recipe should serve {serving_size} people.")
+        
+        if prep_time:
+            prompt_parts.append(f"Each recipe should take no more than {prep_time} minutes to prepare.")
+        
+        if recipe_type:
+            prompt_parts.append(f"Each recipe should be suitable for a {', '.join(recipe_type)} diet.")
+        
+        if allergies:
+            prompt_parts.append(f"Make sure to exclude any ingredients that may trigger these allergies: {', '.join(allergies)}.")
+        
+        # Final format for JSON output
+        prompt_parts.append("Please format the recipes as a JSON array with each recipe containing 'meal', 'serving_size', 'type (diet)', 'allergies', 'prep_time', 'ingredients' with quantities, and 'instructions'.")
+
         final_prompt = " ".join(prompt_parts)
 
         # Create an OpenAI client instance
@@ -352,16 +398,27 @@ def save_food():
         index = data['index']
         new_name = data['new_name']
 
+        # Load the current food list
         with open(food_list_file, 'r') as file:
             food_data = json.load(file)
 
-        if 0 <= index < len(food_data['ingredients']):
-            food_data['ingredients'][index] = new_name
-            with open(food_list_file, 'w') as file:
-                json.dump(food_data, file, indent=2)
-            return jsonify({"message": "Food name updated successfully!"})
-        else:
+        # Validate index to ensure it is within the range of the list
+        if not 0 <= index < len(food_data['ingredients']):
+                                                      
+                                                   
+                                                    
+                                                                          
+             
             return jsonify({"error": "Index out of range"}), 400
+
+        # Update the food item
+        food_data['ingredients'][index] = new_name
+        
+        # Save the updated list back to haul.json
+        with open(food_list_file, 'w') as file:
+            json.dump(food_data, file, indent=2)
+            
+        return jsonify({"message": "Food name updated successfully!"})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -447,6 +504,299 @@ def check_haul():
     except Exception as e:
         logger.exception("Error during haul check")
         return jsonify({"error": str(e)}), 500
+
+# Function to create a backup of the current ingredient list
+def create_backup():
+    haul_filepath = os.path.join(app.root_path, 'haul', 'haul.json')
+    haul_backup_filepath = os.path.join(app.root_path, 'haul', 'haulBackup.json')
+    
+    # Check if haul.json exists before attempting to copy
+    if os.path.exists(haul_filepath):
+        shutil.copy(haul_filepath, haul_backup_filepath)
+    else:
+        raise FileNotFoundError("No haul.json file found to backup")
+
+gen_conditions_file = os.path.join(app.root_path, 'haul', 'genConditions.json')
+haul_conditions_file = os.path.join(app.root_path, 'haul', 'haulConditions.json')
+
+# Route to get the general conditions (serving size and prep time)
+@app.route('/get-gen-conditions', methods=['GET'])
+def get_gen_conditions():
+    try:
+        if os.path.exists(gen_conditions_file):
+            with open(gen_conditions_file, 'r') as file:
+                data = json.load(file)
+            return jsonify(data)
+        else:
+            return jsonify({"serving_size": "", "prep_time": ""}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Route to save or update general conditions (serving size or prep time)
+@app.route('/save-gen-conditions', methods=['POST'])
+def save_gen_conditions():
+    try:
+        data = request.json
+
+        # Ensure genConditions.json exists, or create a default one
+        if not os.path.exists(gen_conditions_file):
+            gen_conditions_data = {"serving_size": "", "prep_time": ""}
+        else:
+            with open(gen_conditions_file, 'r') as file:
+                gen_conditions_data = json.load(file)
+
+        # Update serving size or prep time based on input
+        if 'serving_size' in data:
+            gen_conditions_data['serving_size'] = data['serving_size']
+        if 'prep_time' in data:
+            gen_conditions_data['prep_time'] = data['prep_time']
+
+        # Save the updated data back to genConditions.json
+        with open(gen_conditions_file, 'w') as file:
+            json.dump(gen_conditions_data, file, indent=2)
+
+        return jsonify({"message": "General conditions updated successfully!"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Route to get the haul conditions (including allergies, diets, and spice tolerance)
+@app.route('/get-haul-conditions', methods=['GET'])
+def get_haul_conditions():
+    try:
+        if os.path.exists(haul_conditions_file):
+            with open(haul_conditions_file, 'r') as file:
+                data = json.load(file)
+            return jsonify(data)
+        else:
+            return jsonify({"allergies": [], "diets": [], "spiciest_food": ""}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Route to save or update spice tolerance in haulConditions.json
+@app.route('/save-spice-tolerance', methods=['POST'])
+def save_spice_tolerance():
+    try:
+        data = request.json
+        spiciest_food = data.get('spiciest_food', '')
+
+        # Ensure haulConditions.json exists, or create a default one
+        if not os.path.exists(haul_conditions_file):
+            haul_conditions_data = {"allergies": [], "diets": [], "spiciest_food": ""}
+        else:
+            with open(haul_conditions_file, 'r') as file:
+                haul_conditions_data = json.load(file)
+
+        # Update spiciest food
+        haul_conditions_data['spiciest_food'] = spiciest_food
+
+        # Save the updated data back to haulConditions.json
+        with open(haul_conditions_file, 'w') as file:
+            json.dump(haul_conditions_data, file, indent=2)
+
+        return jsonify({"message": "Spice tolerance updated successfully!"})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/modify-ingredients', methods=['POST'])
+def modify_ingredients():
+    try:
+        # Create a backup of the current ingredient list before making changes
+        create_backup()
+
+        data = request.get_json()
+        api_key = data.get('api_key')
+
+        if not api_key:
+            return jsonify({"error": "API key is required"}), 400
+
+        # Load the current conditions from haulConditions.json (allergies, diets, spiciest food)
+        with open(haul_conditions_file, 'r') as file:
+            haul_conditions_data = json.load(file)
+        
+        dietary_preferences = haul_conditions_data.get('diets', [])
+        allergies = haul_conditions_data.get('allergies', [])
+        spiciest_food = haul_conditions_data.get('spiciest_food', '')
+
+        # Load the current ingredient list from haul.json
+        haul_filepath = os.path.join(app.root_path, 'haul', 'haul.json')
+        with open(haul_filepath, 'r') as file:
+            ingredients_data = json.load(file)
+
+        # Construct the prompt dynamically, adding logic to remove ingredients based on the conditions
+        prompt = (
+            f"Edit the ingredient list to fit the following criteria: {', '.join(dietary_preferences)} "
+            f"and free of: {', '.join(allergies)}. "
+            f"Here is the current ingredient list: {', '.join(ingredients_data['ingredients'])}. "
+            f"Additionally, please identify and remove any ingredients spicier than {spiciest_food}. "
+            f"Return the output in a valid JSON format, and only include the updated list of ingredients under an 'ingredients' key."
+        )
+
+        # Send the prompt to OpenAI using the provided API key
+        client = OpenAI(api_key=api_key)
+        response = client.chat.completions.create(
+            messages=[{"role": "user", "content": prompt}],
+            model="gpt-4o-mini"
+        )
+
+        # Handle potential errors with the OpenAI response
+        if response is None or not response.choices or not response.choices[0].message.content:
+            return jsonify({"error": "Failed to get a valid response from OpenAI"}), 500
+
+        generated_text = response.choices[0].message.content
+        logger.debug(f"Generated text from OpenAI: {generated_text}")
+
+        # Parse the response ensuring valid JSON
+        try:
+            generated_text = generated_text.strip("```json").strip("```").strip()
+            new_ingredients = json.loads(generated_text).get('ingredients', [])
+        except json.JSONDecodeError as e:
+            logger.error(f"Failed to parse generated text as JSON: {e}")
+            return jsonify({"error": "OpenAI response is not valid JSON"}), 500
+
+        # Overwrite the haul.json file with the modified list
+        with open(haul_filepath, 'w') as file:
+            json.dump({'ingredients': new_ingredients}, file, indent=2)
+
+        return jsonify({"message": "Ingredient list modified successfully!", "ingredients": new_ingredients})
+
+    except Exception as e:
+        logger.exception("Error occurred during ingredient modification")
+        return jsonify({"error": str(e)}), 500
+
+# Allergies routes
+@app.route('/save-allergy', methods=['POST'])
+def save_allergy():
+    data = request.json
+    index = data.get('index')
+    new_name = data.get('new_name')
+
+    # Load the current conditions from haulConditions.json
+    with open(haul_conditions_file, 'r') as file:
+        haul_conditions_data = json.load(file)
+
+    # Validate index and update allergy
+    if 0 <= index < len(haul_conditions_data['allergies']):
+        haul_conditions_data['allergies'][index] = new_name
+        with open(haul_conditions_file, 'w') as file:
+            json.dump(haul_conditions_data, file, indent=2)
+        return jsonify({"message": "Allergy updated successfully!"})
+    return jsonify({"error": "Index out of range"}), 400
+
+@app.route('/delete-allergy', methods=['POST'])
+def delete_allergy():
+    data = request.json
+    index = data.get('index')
+
+    with open(haul_conditions_file, 'r') as file:
+        haul_conditions_data = json.load(file)
+
+    # Validate index and remove allergy
+    if 0 <= index < len(haul_conditions_data['allergies']):
+        haul_conditions_data['allergies'].pop(index)
+        with open(haul_conditions_file, 'w') as file:
+            json.dump(haul_conditions_data, file, indent=2)
+        return jsonify({"message": "Allergy deleted successfully!"})
+    return jsonify({"error": "Index out of range"}), 400
+
+@app.route('/add-allergy', methods=['POST'])
+def add_allergy():
+    try:
+        data = request.json
+        new_allergy = data.get('newAllergy')
+
+        # Check if the file exists, if not, create it with a default structure
+        if not os.path.exists(haul_conditions_file):
+            haul_conditions_data = {"allergies": [], "diets": [], "spiciest_food": ""}
+        else:
+            with open(haul_conditions_file, 'r') as file:
+                haul_conditions_data = json.load(file)
+
+        # Add allergy if it doesn't already exist
+        if new_allergy not in haul_conditions_data['allergies']:
+            haul_conditions_data['allergies'].append(new_allergy)
+            with open(haul_conditions_file, 'w') as file:
+                json.dump(haul_conditions_data, file, indent=2)
+            return jsonify({"message": "Allergy added successfully!"})
+        else:
+            return jsonify({"error": "Allergy already exists"}), 400
+
+    except Exception as e:
+        logger.exception("Error adding allergy")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/clear-allergies', methods=['POST'])
+def clear_allergies():
+    with open(haul_conditions_file, 'r') as file:
+        haul_conditions_data = json.load(file)
+
+    # Clear all allergies
+    haul_conditions_data['allergies'] = []
+    with open(haul_conditions_file, 'w') as file:
+        json.dump(haul_conditions_data, file, indent=2)
+    return jsonify({"message": "All allergies cleared successfully!"})
+
+# Diet routes
+@app.route('/save-diet', methods=['POST'])
+def save_diet():
+    data = request.json
+    index = data.get('index')
+    new_name = data.get('new_name')
+
+    # Load the current conditions from haulConditions.json
+    with open(haul_conditions_file, 'r') as file:
+        haul_conditions_data = json.load(file)
+
+    # Validate index and update diet
+    if 0 <= index < len(haul_conditions_data['diets']):
+        haul_conditions_data['diets'][index] = new_name
+        with open(haul_conditions_file, 'w') as file:
+            json.dump(haul_conditions_data, file, indent=2)
+        return jsonify({"message": "Diet updated successfully!"})
+    return jsonify({"error": "Index out of range"}), 400
+
+@app.route('/delete-diet', methods=['POST'])
+def delete_diet():
+    data = request.json
+    index = data.get('index')
+
+    with open(haul_conditions_file, 'r') as file:
+        haul_conditions_data = json.load(file)
+
+    # Validate index and remove diet
+    if 0 <= index < len(haul_conditions_data['diets']):
+        haul_conditions_data['diets'].pop(index)
+        with open(haul_conditions_file, 'w') as file:
+            json.dump(haul_conditions_data, file, indent=2)
+        return jsonify({"message": "Diet deleted successfully!"})
+    return jsonify({"error": "Index out of range"}), 400
+
+@app.route('/add-diet', methods=['POST'])
+def add_diet():
+    data = request.json
+    new_diet = data.get('newDiet')
+
+    with open(haul_conditions_file, 'r') as file:
+        haul_conditions_data = json.load(file)
+
+    # Add diet if it doesn't already exist
+    if new_diet not in haul_conditions_data['diets']:
+        haul_conditions_data['diets'].append(new_diet)
+        with open(haul_conditions_file, 'w') as file:
+            json.dump(haul_conditions_data, file, indent=2)
+        return jsonify({"message": "Diet added successfully!"})
+    return jsonify({"error": "Diet already exists"}), 400
+
+@app.route('/clear-diets', methods=['POST'])
+def clear_diets():
+    with open(haul_conditions_file, 'r') as file:
+        haul_conditions_data = json.load(file)
+
+    # Clear all diets
+    haul_conditions_data['diets'] = []
+    with open(haul_conditions_file, 'w') as file:
+        json.dump(haul_conditions_data, file, indent=2)
+    return jsonify({"message": "All diets cleared successfully!"})
 
 if __name__ == '__main__':
     # Start the Flask app in a separate thread
