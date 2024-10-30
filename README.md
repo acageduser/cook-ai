@@ -29,38 +29,10 @@ This Flask application generates recipes in JSON format using OpenAI's GPT-4o-tu
 
 #### Prerequisites
 
-- [Python 3.7](https://www.python.org/downloads/release/python-3120/) or higher (Make sure Python is [added to your system's PATH](https://www.youtube.com/watch?v=iNoQeRj52zo&ab_channel=ChartExplorers))
-- [git](https://git-scm.com/download/win)
-
-## Installation
-
-First, clone the repository to your local machine using git. Open a Git Bash where you want the app to download:
-
-```
-git clone https://github.com/acageduser/cook-ai.git
-cd cook-ai/
-./start_local-windows_setup_and_server.sh
-```
-This will download the app, go into the correct directory, and start the app's server.
+- None. Everything is within the website version and executable version (.exe)
 
 ## Running the Application
-
-#### Windows
-To start the application on Windows, open Git Bash inside the cook-ai folder and run:
-
-```
-./start_local-windows_setup_and_server.sh
-```
-
-## Accessing the Application
-Open ```start_local-windows_setup_and_server.bat``` (Windows). This is the local server. Once the local server is running, open your web browser and navigate to:
-
-[```http://127.0.0.1:5000```](http://127.0.0.1:5000)
-This will bring up the CookAI interface where you can generate recipes based on the ingredients you have.
-
-#
-![image](https://github.com/user-attachments/assets/83203b34-a954-4010-9b11-0ab959d1b4f2)
-
+- Run ```cookai.exe``` within a folder of your choice. Note: It is a good idea to download the ```.exe``` in its own folder because it will create sub folders located where the app is run from.
 
 #
 # TO DO:
