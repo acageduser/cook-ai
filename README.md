@@ -17,11 +17,9 @@ This project is intended for educational purposes only.
 #
 #
 
-# Normal Installation
+# Installation
 
 1. Download the latest 'cookai.exe' file and double click. Find the .exe file in the '[Releases](https://github.com/acageduser/cook-ai/releases)' section on the right.
-
-# Manual Installation
 
 ## CookAI Flask Application
 
